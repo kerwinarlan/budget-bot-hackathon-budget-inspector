@@ -7,7 +7,7 @@ from budget_inspector.writer import write_kerwin_investigative_story
 DB_PATH = "data/budget.duckdb"
 
 def build_dashboard_html():
-    print("[Dashboard] Generating newsroom-style preview.html with full mobile responsiveness and Kerwin prose...")
+    print("[Dashboard] Updating preview.html with refined logo sizing, journalistic editorial badges, and orientation CSS...")
     conn = duckdb.connect(DB_PATH, read_only=True)
     
     # 1. Key Metrics
@@ -66,6 +66,16 @@ def build_dashboard_html():
                     rec = json.load(f)
                     md_story = write_kerwin_investigative_story(rec)
                     rec["rendered_html"] = markdown.markdown(md_story, extensions=['fenced_code', 'tables', 'nl2br'])
+                    
+                    # Map raw category code to professional newsroom badge name
+                    raw_cat = rec.get("category", "LARGE_INCREASE")
+                    cat_map = {
+                        "LARGE_INCREASE": "BUDGET EXPANSION",
+                        "NEW_ITEM": "NEW 2026 PROGRAM",
+                        "FLOOD_CONTROL_CHANGE": "INFRASTRUCTURE SHIFT",
+                        "INTERNAL_REALLOCATION": "REALLOCATION"
+                    }
+                    rec["newsroom_tag"] = cat_map.get(raw_cat, "INVESTIGATIVE LEAD")
                     receipts.append(rec)
                     
     inc_json = json.dumps(df_inc.fillna("").to_dict(orient="records"))
@@ -121,23 +131,24 @@ def build_dashboard_html():
     .brand {{
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.75rem;
     }}
     
     .brand-logo-img {{
-      height: 38px;
+      height: 28px;
+      max-height: 28px;
       width: auto;
       object-fit: contain;
     }}
     
     .brand-title h1 {{
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 800;
       letter-spacing: -0.02em;
     }}
     
     .brand-title p {{
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--muted);
     }}
     
@@ -156,13 +167,13 @@ def build_dashboard_html():
       background: var(--accent);
       color: #fff;
       border: 1px solid transparent;
-      padding: 0.55rem 0.9rem;
+      padding: 0.45rem 0.8rem;
       border-radius: 6px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       text-decoration: none;
       cursor: pointer;
-      min-height: 40px;
+      min-height: 36px;
       transition: all 0.15s;
     }}
     .btn:hover {{ background: var(--accent-hover); }}
@@ -326,7 +337,7 @@ def build_dashboard_html():
       color: var(--fg);
       font-size: 0.92rem;
       margin-bottom: 1.25rem;
-      min-height: 44px;
+      min-height: 40px;
     }}
     .search-bar:focus {{ outline: none; border-color: var(--accent); }}
     
@@ -384,18 +395,18 @@ def build_dashboard_html():
       border-radius: 14px;
       width: 100%;
       max-width: 780px;
-      max-height: 90vh;
+      max-height: 88vh;
       overflow-y: auto;
-      padding: 1.5rem;
+      padding: 1.75rem;
       line-height: 1.6;
     }}
     
-    .modal-card h1 {{ font-size: 1.4rem; margin-bottom: 0.75rem; color: var(--fg); }}
+    .modal-card h1 {{ font-size: 1.4rem; margin-bottom: 0.75rem; color: var(--fg); letter-spacing: -0.02em; }}
     .modal-card h2 {{ font-size: 1.15rem; margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }}
     .modal-card h3 {{ font-size: 1rem; margin-top: 1rem; margin-bottom: 0.5rem; color: var(--fg); }}
     .modal-card p {{ margin-bottom: 0.75rem; color: var(--fg); font-size: 0.92rem; }}
     .modal-card ul {{ padding-left: 1.25rem; margin-bottom: 0.75rem; color: var(--muted); font-size: 0.9rem; }}
-    .modal-card pre {{ background: rgba(0,0,0,0.4); padding: 0.85rem; border-radius: 6px; overflow-x: auto; font-family: var(--mono); font-size: 0.8rem; margin-bottom: 1rem; border: 1px solid var(--border); }}
+    .modal-card pre {{ background: rgba(0,0,0,0.4); padding: 0.85rem; border-radius: 6px; overflow-x: auto; font-family: var(--mono); font-size: 0.82rem; margin-bottom: 1rem; border: 1px solid var(--border); }}
     .modal-card code {{ background: rgba(255,255,255,0.08); padding: 0.15rem 0.35rem; border-radius: 4px; font-family: var(--mono); font-size: 0.82rem; }}
 
     .modal-header {{
@@ -408,12 +419,15 @@ def build_dashboard_html():
     }}
     .modal-close {{ background: transparent; border: none; color: var(--muted); font-size: 1.6rem; cursor: pointer; padding: 0 0.5rem; }}
     
-    /* MOBILE RESPONSIVENESS OVERRIDES */
+    /* MOBILE RESPONSIVENESS & LANDSCAPE VS PORTRAIT OVERRIDES */
+    @media (max-width: 900px) {{
+      .newsroom-layout {{ grid-template-columns: 1fr; }}
+    }}
+    
     @media (max-width: 768px) {{
       body {{ padding: 0.85rem; }}
       header {{ flex-direction: column; align-items: flex-start; gap: 0.85rem; }}
       .header-actions {{ width: 100%; justify-content: flex-start; }}
-      .newsroom-layout {{ grid-template-columns: 1fr; }}
       .headline-panel {{ padding: 1.25rem; }}
       .headline-title {{ font-size: 1.3rem; }}
       .metrics-grid {{ grid-template-columns: 1fr 1fr; gap: 0.75rem; }}
@@ -421,9 +435,15 @@ def build_dashboard_html():
       .metric-card .value {{ font-size: 1.3rem; }}
       .modal-card {{ padding: 1.25rem; max-height: 92vh; }}
     }}
-    @media (max-width: 480px) {{
+    
+    @media (max-width: 640px) and (orientation: portrait) {{
       .metrics-grid {{ grid-template-columns: 1fr; }}
       .btn {{ width: 100%; text-align: center; }}
+    }}
+    
+    @media (min-width: 480px) and (max-width: 900px) and (orientation: landscape) {{
+      .metrics-grid {{ grid-template-columns: 1fr 1fr; }}
+      .modal-card {{ max-height: 82vh; }}
     }}
   </style>
 </head>
@@ -441,7 +461,7 @@ def build_dashboard_html():
     <div class="header-actions">
       <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn btn-secondary">📄 Download PDF Brief Report</a>
       <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary">🌐 Download Standalone HTML</a>
-      <img src="assets/vibe_coders_logo_star.png" alt="Emblem" style="height:32px; width:auto;">
+      <img src="assets/vibe_coders_logo_star.png" alt="Emblem" style="height:28px; width:auto; margin-left:0.25rem;">
     </div>
   </header>
 
@@ -488,7 +508,7 @@ def build_dashboard_html():
       </div>
       
       <div style="display:flex; gap:0.5rem; margin-top:0.5rem; flex-wrap:wrap;">
-        <button class="btn" onclick="openLeadArticle(2)">📖 Read Kerwin-Style Investigation Article →</button>
+        <button class="btn" onclick="openLeadArticle(2)">📖 Read Full Kerwin-Style Report →</button>
         <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn btn-secondary">📄 Download PDF Brief</a>
         <button class="btn btn-secondary" onclick="copyCitation('DepEd Basic Education Facilities', 'GAA-2025.xlsx#121894', 'FY2026-GAA-Byobject.xlsx#124510')">📋 Copy Citation</button>
       </div>
@@ -496,7 +516,7 @@ def build_dashboard_html():
 
     <div class="sidebar-panel">
       <div class="sidebar-card">
-        <h3 style="font-size:1.05rem; margin-bottom:0.75rem; color:var(--accent);">📰 Publisher Desk</h3>
+        <h3 style="font-size:1rem; margin-bottom:0.75rem; color:var(--accent);">📰 Publisher Desk</h3>
         <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem;">Produced by <strong>Team Vibe Coders PH</strong> for the Philippine Budget Bot AI Hackathon.</p>
         <div style="display:flex; flex-direction:column; gap:0.5rem;">
           <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn" style="width:100%; justify-content:center;">📄 Download PDF Brief Report</a>
@@ -505,7 +525,7 @@ def build_dashboard_html():
       </div>
 
       <div class="sidebar-card">
-        <h3 style="font-size:1.05rem; margin-bottom:0.75rem;">📁 Active Case Files</h3>
+        <h3 style="font-size:1rem; margin-bottom:0.75rem;">📁 Active Case Files</h3>
         <ul style="list-style:none; font-size:0.85rem; display:flex; flex-direction:column; gap:0.5rem;">
           <li onclick="openLeadArticle(2)" style="cursor:pointer;"><span class="badge badge-high">BI-2026-001</span> DepEd Facilities (+₱54.8B)</li>
           <li onclick="openLeadArticle(3)" style="cursor:pointer;"><span class="badge badge-high">BI-2026-002</span> PhilHealth Subsidies (₱113.1B)</li>
@@ -518,7 +538,7 @@ def build_dashboard_html():
   <!-- Interactive Chart.js Visualization -->
   <div class="chart-container">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-      <h3 style="font-size:1.1rem; color:var(--fg);">📊 Visual Inspection: Top Budget Increases (2025 vs 2026)</h3>
+      <h3 style="font-size:1.05rem; color:var(--fg);">📊 Visual Inspection: Top Budget Increases (2025 vs 2026)</h3>
       <span style="font-size:0.8rem; color:var(--muted);">Amount in Billion Pesos (₱B)</span>
     </div>
     <canvas id="increasesChart" style="max-height: 280px;"></canvas>
@@ -600,7 +620,7 @@ def build_dashboard_html():
       <div class="modal-header">
         <div>
           <span class="badge badge-verified">VERIFIED ARTICLE FILE</span>
-          <h2 id="modalTitle" style="font-size: 1.25rem; margin-top: 0.4rem; color: var(--fg);"></h2>
+          <h2 id="modalTitle" style="font-size: 1.2rem; margin-top: 0.35rem; color: var(--fg);"></h2>
         </div>
         <button class="modal-close" onclick="closeModal(event)">&times;</button>
       </div>
@@ -610,7 +630,7 @@ def build_dashboard_html():
 
   <footer>
     <p><strong>Budget Inspector</strong> &copy; 2026 Vibe Coders PH. Data Source: Department of Budget and Management (DBM) General Appropriations Acts.</p>
-    <img src="assets/vibe_coders_logo_white.png" alt="Vibe Coders PH">
+    <img src="assets/vibe_coders_logo_white.png" alt="Vibe Coders PH" style="height:24px; width:auto;">
     <p style="margin-top:0.4rem; font-size:0.78rem;">Skill Fork: <code>kerwinarlan/budget-bot-skill</code> (forked from <code>tordecilla/budget-bot-skill</code>)</p>
   </footer>
 
@@ -718,19 +738,19 @@ def build_dashboard_html():
       container.innerHTML = dataReceipts.map((l, idx) => `
         <div class="clickable-card" onclick="openLeadArticle(${{idx}})">
           <div class="lead-header">
-            <span class="lead-id">${{l.lead_id}}</span>
-            <span class="lead-cat">${{l.category}}</span>
+            <span class="badge badge-high">${{l.newsroom_tag || 'INVESTIGATIVE LEAD'}}</span>
+            <span class="badge badge-verified">VERIFIED PROVENANCE</span>
           </div>
-          <div class="lead-title">${{l.title}}</div>
+          <div class="lead-title">${{l.title.replace('Substantial Budget Expansion: ', '').replace('Newly Created Line Item: ', '').replace('Flood Mitigation Allocation Shift: ', '')}}</div>
           <div class="lead-obs">${{l.observation}}</div>
-          <div style="font-size:0.8rem; color:var(--accent); font-weight:600; margin-top:auto;">📖 Read Kerwin-Style Investigation Article →</div>
+          <div style="font-size:0.8rem; color:var(--accent); font-weight:600; margin-top:auto;">📖 Read Full Kerwin-Style Investigation Article →</div>
         </div>
       `).join("");
     }}
 
     function openLeadArticle(idx) {{
       const l = dataReceipts[idx] || dataReceipts[0];
-      document.getElementById("modalTitle").innerText = l.title;
+      document.getElementById("modalTitle").innerText = l.title.replace('Substantial Budget Expansion: ', '').replace('Newly Created Line Item: ', '').replace('Flood Mitigation Allocation Shift: ', '');
       
       const storyHtml = l.rendered_html || l.observation;
       
@@ -827,7 +847,7 @@ def build_dashboard_html():
     with open(out_path, "w") as f:
         f.write(html_content)
         
-    print(f"[Dashboard] Generated mobile-responsive newsroom preview at {out_path}")
+    print(f"[Dashboard] Generated newsroom preview at {out_path}")
     return out_path
 
 if __name__ == "__main__":
