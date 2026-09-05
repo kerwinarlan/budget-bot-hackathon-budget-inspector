@@ -5,7 +5,7 @@ import duckdb
 DB_PATH = "data/budget.duckdb"
 
 def build_dashboard_html():
-    print("[Dashboard] Generating interactive preview.html from DuckDB data...")
+    print("[Dashboard] Generating interactive preview.html with Vibe Coders PH logo and clickable article panels...")
     conn = duckdb.connect(DB_PATH, read_only=True)
     
     # 1. Key Metrics
@@ -50,7 +50,7 @@ def build_dashboard_html():
     
     conn.close()
     
-    # Load Research Receipts
+    # Load Research Receipts & Case Files
     receipts = []
     receipt_dir = "queries/investigations"
     if os.path.exists(receipt_dir):
@@ -72,17 +72,17 @@ def build_dashboard_html():
   <title>Budget Inspector — Philippine Budget Bot Hackathon Dashboard</title>
   <style>
     :root {{
-      --bg: var(--background, #0f172a);
-      --card-bg: var(--card, #1e293b);
-      --fg: var(--foreground, #f8fafc);
-      --muted: var(--muted-foreground, #94a3b8);
-      --accent: var(--accent, #3b82f6);
-      --accent-hover: #2563eb;
-      --border: var(--border, #334155);
+      --bg: #090d16;
+      --card-bg: #131b2a;
+      --card-hover: #1c2738;
+      --fg: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+      --border: #202d42;
       --success: #10b981;
       --warning: #f59e0b;
-      --danger: #ef4444;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }}
     
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -93,6 +93,7 @@ def build_dashboard_html():
       color: var(--fg);
       padding: 1.5rem;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }}
     
     header {{
@@ -107,36 +108,24 @@ def build_dashboard_html():
     .brand {{
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
     }}
     
-    .brand-logo {{
-      background: var(--accent);
-      color: #fff;
-      padding: 0.5rem 0.75rem;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 1.2rem;
+    .brand-logo-img {{
+      height: 42px;
+      width: auto;
+      object-fit: contain;
     }}
     
     .brand-title h1 {{
       font-size: 1.5rem;
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }}
     
     .brand-title p {{
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--muted);
-    }}
-    
-    .badge-team {{
-      background: rgba(59, 130, 246, 0.15);
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
     }}
     
     .metrics-grid {{
@@ -154,7 +143,7 @@ def build_dashboard_html():
     }}
     
     .metric-card span {{
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -164,6 +153,8 @@ def build_dashboard_html():
       font-size: 1.6rem;
       font-weight: 700;
       margin-top: 0.25rem;
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
     }}
     
     .metric-card .sub {{
@@ -241,7 +232,7 @@ def build_dashboard_html():
     }}
     
     th {{
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.3);
       color: var(--muted);
       font-weight: 600;
       text-transform: uppercase;
@@ -252,25 +243,30 @@ def build_dashboard_html():
       border-bottom: none;
     }}
     
-    tr:hover td {{
-      background: rgba(255,255,255,0.02);
+    tr.clickable-row {{
+      cursor: pointer;
+      transition: background 0.15s;
+    }}
+    
+    tr.clickable-row:hover td {{
+      background: var(--card-hover);
     }}
     
     .num {{
-      font-family: monospace;
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
       text-align: right;
     }}
     
     .text-green {{ color: var(--success); font-weight: 600; }}
-    .text-magenta {{ color: #e06c75; font-weight: 600; }}
     
     .leads-grid {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 1.5rem;
     }}
     
-    .lead-card {{
+    .clickable-card {{
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -278,6 +274,15 @@ def build_dashboard_html():
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }}
+    
+    .clickable-card:hover {{
+      background: var(--card-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }}
     
     .lead-header {{
@@ -287,7 +292,7 @@ def build_dashboard_html():
     }}
     
     .lead-id {{
-      font-family: monospace;
+      font-family: var(--mono);
       background: var(--border);
       padding: 0.2rem 0.5rem;
       border-radius: 4px;
@@ -302,7 +307,8 @@ def build_dashboard_html():
     
     .lead-title {{
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
+      line-height: 1.4;
     }}
     
     .lead-obs {{
@@ -310,38 +316,83 @@ def build_dashboard_html():
       color: var(--muted);
     }}
     
-    .lead-prov {{
-      background: rgba(0,0,0,0.3);
-      padding: 0.75rem;
-      border-radius: 6px;
+    .click-prompt {{
       font-size: 0.8rem;
-      font-family: monospace;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
     }}
     
-    .btn-receipt {{
-      align-self: flex-start;
+    /* Modal Article Viewer */
+    .modal-overlay {{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }}
+    .modal-overlay.active {{ display: flex; }}
+    
+    .modal-card {{
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 720px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    }}
+    
+    .modal-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }}
+    
+    .modal-close {{
       background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
       cursor: pointer;
     }}
+    .modal-close:hover {{ color: var(--fg); }}
     
-    .btn-receipt:hover {{
-      background: var(--accent);
-      color: #fff;
+    .badge {{
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: var(--mono);
     }}
+    .badge-verified {{ background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }}
     
     footer {{
       margin-top: 3rem;
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--muted);
       border-top: 1px solid var(--border);
       padding-top: 1.5rem;
+    }}
+    
+    footer .vibe-logo-footer {{
+      height: 32px;
+      width: auto;
+      margin-top: 0.75rem;
     }}
   </style>
 </head>
@@ -349,13 +400,13 @@ def build_dashboard_html():
 
   <header>
     <div class="brand">
-      <div class="brand-logo">PH</div>
+      <img src="assets/vibe_coders_logo_white.png" alt="Vibe Coders PH" class="brand-logo-img">
       <div class="brand-title">
-        <h1>Budget Inspector Dashboard</h1>
-        <p>Philippine Budget Bot AI Hackathon Deliverable — FY 2025 vs FY 2026 GAA Analysis</p>
+        <h1>Budget Inspector</h1>
+        <p>Evidence-First Philippine Budget Agent Desk — Team Vibe Coders PH</p>
       </div>
     </div>
-    <div class="badge-team">Team Vibe Coders</div>
+    <img src="assets/vibe_coders_logo_star.png" alt="Vibe Coders Emblem" style="height:36px; width:auto;">
   </header>
 
   <div class="metrics-grid">
@@ -382,16 +433,21 @@ def build_dashboard_html():
   </div>
 
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab(event, 'top-inc')">📈 Top Increases</button>
+    <button class="tab-btn active" onclick="switchTab(event, 'leads')">🔍 Verified Lead Articles</button>
+    <button class="tab-btn" onclick="switchTab(event, 'top-inc')">📈 Top Increases</button>
     <button class="tab-btn" onclick="switchTab(event, 'new-items')">🆕 New Items (2026)</button>
     <button class="tab-btn" onclick="switchTab(event, 'flood')">🌊 Flood Control</button>
-    <button class="tab-btn" onclick="switchTab(event, 'leads')">🔍 Verified Leads & Receipts</button>
   </div>
 
   <input type="text" id="searchInput" class="search-bar" placeholder="Filter line items by agency, description, or UACS code..." onkeyup="filterTables()">
 
-  <!-- TAB 1: TOP INCREASES -->
-  <div id="top-inc" class="tab-content active">
+  <!-- TAB 1: VERIFIED LEADS -->
+  <div id="leads" class="tab-content active">
+    <div class="leads-grid" id="leads-container"></div>
+  </div>
+
+  <!-- TAB 2: TOP INCREASES -->
+  <div id="top-inc" class="tab-content">
     <div class="data-table-wrapper">
       <table id="table-inc">
         <thead>
@@ -409,7 +465,7 @@ def build_dashboard_html():
     </div>
   </div>
 
-  <!-- TAB 2: NEW ITEMS -->
+  <!-- TAB 3: NEW ITEMS -->
   <div id="new-items" class="tab-content">
     <div class="data-table-wrapper">
       <table id="table-new">
@@ -426,7 +482,7 @@ def build_dashboard_html():
     </div>
   </div>
 
-  <!-- TAB 3: FLOOD CONTROL -->
+  <!-- TAB 4: FLOOD CONTROL -->
   <div id="flood" class="tab-content">
     <div class="data-table-wrapper">
       <table id="table-fc">
@@ -444,14 +500,24 @@ def build_dashboard_html():
     </div>
   </div>
 
-  <!-- TAB 4: VERIFIED LEADS -->
-  <div id="leads" class="tab-content">
-    <div class="leads-grid" id="leads-container"></div>
+  <!-- Article / Investigation Modal -->
+  <div class="modal-overlay" id="articleModal" onclick="closeModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <span class="badge badge-verified">VERIFIED ARTICLE FILE</span>
+          <h2 id="modalTitle" style="font-size: 1.25rem; margin-top: 0.4rem; color: var(--fg);"></h2>
+        </div>
+        <button class="modal-close" onclick="closeModal(event)">&times;</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
   </div>
 
   <footer>
-    <p>Budget Inspector &copy; 2026 Vibe Coders. Data Source: Department of Budget and Management (DBM) General Appropriations Acts.</p>
-    <p style="margin-top:0.25rem;">Skill Fork: <code>kerwinarlan/budget-bot-skill</code> (forked from <code>tordecilla/budget-bot-skill</code>)</p>
+    <p><strong>Budget Inspector</strong> &copy; 2026 Vibe Coders PH. Data Source: Department of Budget and Management (DBM) General Appropriations Acts.</p>
+    <img src="assets/vibe_coders_logo_white.png" alt="Vibe Coders PH" class="vibe-logo-footer">
+    <p style="margin-top:0.4rem; font-size:0.78rem;">Skill Fork: <code>kerwinarlan/budget-bot-skill</code> (forked from <code>tordecilla/budget-bot-skill</code>)</p>
   </footer>
 
   <script>
@@ -469,7 +535,7 @@ def build_dashboard_html():
     function populateIncreases() {{
       const tbody = document.getElementById("body-inc");
       tbody.innerHTML = dataInc.map(r => `
-        <tr>
+        <tr class="clickable-row" onclick="openRowDetail('${{r.agency_name}}', '${{r.description.replace(/'/g, "\\'")}}')">
           <td><strong>${{r.agency_name}}</strong></td>
           <td>${{r.description}}</td>
           <td class="num">${{formatPHP(r.amount_2025_pesos)}}</td>
@@ -483,7 +549,7 @@ def build_dashboard_html():
     function populateNew() {{
       const tbody = document.getElementById("body-new");
       tbody.innerHTML = dataNew.map(r => `
-        <tr>
+        <tr class="clickable-row" onclick="openRowDetail('${{r.agency_name}}', '${{r.description.replace(/'/g, "\\'")}}')">
           <td><strong>${{r.agency_name}}</strong></td>
           <td>${{r.description}}</td>
           <td>${{r.expense_class}}</td>
@@ -495,7 +561,7 @@ def build_dashboard_html():
     function populateFlood() {{
       const tbody = document.getElementById("body-fc");
       tbody.innerHTML = dataFc.map(r => `
-        <tr>
+        <tr class="clickable-row" onclick="openRowDetail('${{r.agency_name}}', '${{r.description.replace(/'/g, "\\'")}}')">
           <td><strong>${{r.agency_name}}</strong></td>
           <td>${{r.description}}</td>
           <td class="num">${{formatPHP(r.amount_2025_pesos)}}</td>
@@ -507,20 +573,74 @@ def build_dashboard_html():
 
     function populateLeads() {{
       const container = document.getElementById("leads-container");
-      container.innerHTML = dataReceipts.map(l => `
-        <div class="lead-card">
+      container.innerHTML = dataReceipts.map((l, idx) => `
+        <div class="clickable-card" onclick="openLeadArticle(${{idx}})">
           <div class="lead-header">
             <span class="lead-id">${{l.lead_id}}</span>
             <span class="lead-cat">${{l.category}}</span>
           </div>
           <div class="lead-title">${{l.title}}</div>
           <div class="lead-obs">${{l.observation}}</div>
-          <div class="lead-prov">
-            <div>2025: ${{l.provenance_2025[0] ? 'File ' + l.provenance_2025[0].source_file + ', Row ' + l.provenance_2025[0].source_row : 'NEW IN 2026'}}</div>
-            <div>2026: ${{l.provenance_2026[0] ? 'File ' + l.provenance_2026[0].source_file + ', Row ' + l.provenance_2026[0].source_row : 'DISAPPEARED'}}</div>
-          </div>
+          <div class="click-prompt">📖 Read Full Article File & Provenance →</div>
         </div>
       `).join("");
+    }}
+
+    function openLeadArticle(idx) {{
+      const l = dataReceipts[idx];
+      document.getElementById("modalTitle").innerText = l.title;
+      
+      const p25 = l.provenance_2025[0] ? `File <code>${{l.provenance_2025[0].source_file}}</code>, Sheet <code>${{l.provenance_2025[0].source_sheet}}</code>, Excel Row <strong style="color:var(--accent);">${{l.provenance_2025[0].source_row}}</strong>` : 'NEW IN 2026';
+      const p26 = l.provenance_2026[0] ? `File <code>${{l.provenance_2026[0].source_file}}</code>, Sheet <code>${{l.provenance_2026[0].source_sheet}}</code>, Excel Row <strong style="color:var(--success);">${{l.provenance_2026[0].source_row}}</strong>` : 'DISAPPEARED';
+      
+      document.getElementById("modalBody").innerHTML = `
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="color: var(--accent); margin-bottom: 0.5rem;">1. Key Observation</h3>
+          <p style="font-size: 0.95rem; line-height: 1.6; color: var(--fg);">${{l.observation}}</p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <h4 style="color: var(--muted); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.5rem;">Cell-Level Spreadsheet Provenance</h4>
+          <div style="font-size: 0.85rem; font-family: var(--mono); line-height: 1.8;">
+            <div><strong>2025 Source</strong>: ${{p25}}</div>
+            <div><strong>2026 Source</strong>: ${{p26}}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="color: var(--warning); margin-bottom: 0.5rem;">2. Analytical Caveats</h3>
+          <ul style="padding-left: 1.25rem; font-size: 0.88rem; color: var(--muted);">
+            ${{l.caveats.map(c => `<li>⚠️ ${{c}}</li>`).join("")}}
+          </ul>
+        </div>
+
+        <div>
+          <h3 style="color: var(--accent); margin-bottom: 0.5rem;">3. Recommended Next Questions</h3>
+          <ul style="padding-left: 1.25rem; font-size: 0.88rem; color: var(--muted);">
+            ${{l.next_steps.map(s => `<li>🔍 ${{s}}</li>`).join("")}}
+          </ul>
+        </div>
+      `;
+      
+      document.getElementById("articleModal").classList.add("active");
+    }}
+
+    function openRowDetail(agency, description) {{
+      document.getElementById("modalTitle").innerText = agency + " — Inspection";
+      document.getElementById("modalBody").innerHTML = `
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="color: var(--accent); margin-bottom: 0.5rem;">Program Description</h3>
+          <p style="font-size: 1rem; font-weight: 600;">${{description}}</p>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 1rem; border-radius: 8px;">
+          <p style="font-size: 0.88rem; color: var(--muted);">Reconciled directly against official Department of Budget and Management (DBM) General Appropriations Act spreadsheets.</p>
+        </div>
+      `;
+      document.getElementById("articleModal").classList.add("active");
+    }}
+
+    function closeModal(e) {{
+      document.getElementById("articleModal").classList.remove("active");
     }}
 
     function switchTab(event, tabId) {{
@@ -533,9 +653,9 @@ def build_dashboard_html():
 
     function filterTables() {{
       const q = document.getElementById("searchInput").value.toLowerCase();
-      document.querySelectorAll("tbody tr").forEach(tr => {{
-        const text = tr.innerText.toLowerCase();
-        tr.style.display = text.includes(q) ? "" : "none";
+      document.querySelectorAll("tbody tr, .clickable-card").forEach(el => {{
+        const text = el.innerText.toLowerCase();
+        el.style.display = text.includes(q) ? "" : "none";
       }});
     }}
 

@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timezone
 from typing import Optional, List
 from fastapi import FastAPI, Request, Form, Query, HTTPException
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import duckdb
@@ -29,10 +29,15 @@ app = FastAPI(
 )
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 os.makedirs(TEMPLATES_DIR, exist_ok=True)
+os.makedirs(STATIC_DIR, exist_ok=True)
+
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-# Mount briefs directory for file downloads
+# Mount static directories
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 BRIEFS_DIR = "reports/briefs"
 os.makedirs(BRIEFS_DIR, exist_ok=True)
 app.mount("/reports/briefs", StaticFiles(directory=BRIEFS_DIR), name="briefs_files")
