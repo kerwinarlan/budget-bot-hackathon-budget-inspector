@@ -13,7 +13,7 @@ The enacted **FY 2026 General Appropriations Act (GAA, R.A. 12314)** authorizes 
 
 While headline agency growth remained stable across major departments, deep line-item inspection reveals significant internal program shifts, major infrastructure reallocations, and newly introduced GOCC subsidy line items.
 
-Below are three verified investigative case files examined by the Budget Inspector desk.
+Below are verified investigative case files examined by the Budget Inspector desk.
 
 ---
 
@@ -101,6 +101,114 @@ Flood control infrastructure maintenance saw a significant relative boost in 202
 - 🔍 Which DPWH District Engineering Offices received the largest maintenance allocations?
 - 🔍 Cross-reference MMDA's ₱355M new flood control upgrading allocation in Metro Manila.
 - 🔍 Check COA audit reports for DPWH flood control maintenance utilization rates.
+
+---
+
+### Case BI-2026-004: Autonomous Inspection: Maintenance, Repair and Rehabilitation of Infrastr
+**Department**: Department of Public Works and Highways (DPWH) | **Agency**: Office of the Secretary  
+**Investigative Interest**: `HIGH` | **Data Confidence**: `HIGH`  
+
+- **2025 Allocation**: ₱0.70 Billion
+- **2026 Allocation**: ₱1.80 Billion
+- **Absolute Delta**: ₱1.10 Billion (+157.1%)
+
+#### What Changed & Why It Stands Out
+Automated inspection initiated for Office of the Secretary's program 'Maintenance, Repair and Rehabilitation of Infrastructure Facilities and Other Related Activities - Maintenance, Repair and Rehabilitation of Infrastructure Facilities - Flood Control and Drainage Systems, Structures and Related Facilities'. Allocation moved from ₱700.0M in 2025 to ₱1800.0M in 2026 (Delta: ₱1100.0M).
+
+#### Inspector Checks & Findings
+Autonomous inspection completed. Reconciled 2025 amount: ₱700,000,000.00, 2026 amount: ₱1,800,000,000.00.
+
+#### Provenance Citation
+- FY 2025: GAA-2025.xlsx (Row 485386)
+- FY 2026: FY2026-GAA-Byobject.xlsx (Row 482195)
+
+#### Analytical Caveats
+- ⚠️ Appropriations represent budget authorization, not actual cash disbursements or completed contracts.
+
+#### Recommended Next Questions
+- 🔍 Inspect agency's Budget Priorities Framework justification.
+- 🔍 Check DBM Special Allotment Release Orders (SAROs).
+
+---
+
+### Case BI-2026-005: Autonomous Inspection: Provision of adequate, sustainable, reliable and q
+**Department**: Budgetary Support to Government Corporations (BSGC) | **Agency**: National Power Corporation  
+**Investigative Interest**: `HIGH` | **Data Confidence**: `HIGH`  
+
+- **2025 Allocation**: ₱0.00 Billion
+- **2026 Allocation**: ₱1.87 Billion
+- **Absolute Delta**: ₱1.87 Billion (NEW IN 2026)
+
+#### What Changed & Why It Stands Out
+Automated inspection initiated for National Power Corporation's program 'Provision of adequate, sustainable, reliable and quality supply of electricity to Missionary Areas'. Allocation moved from ₱0.0M in 2025 to ₱1866.4M in 2026 (Delta: ₱1866.4M).
+
+#### Inspector Checks & Findings
+Autonomous inspection completed. Reconciled 2025 amount: ₱0.00, 2026 amount: ₱1,866,377,000.00.
+
+#### Provenance Citation
+- FY 2025: None
+- FY 2026: FY2026-GAA-Byobject.xlsx (Row 721784)
+
+#### Analytical Caveats
+- ⚠️ Appropriations represent budget authorization, not actual cash disbursements or completed contracts.
+
+#### Recommended Next Questions
+- 🔍 Inspect agency's Budget Priorities Framework justification.
+- 🔍 Check DBM Special Allotment Release Orders (SAROs).
+
+---
+
+### Case BI-2026-006: Autonomous Inspection: Provision of adequate, sustainable, reliable and q
+**Department**: Budgetary Support to Government Corporations (BSGC) | **Agency**: National Power Corporation  
+**Investigative Interest**: `HIGH` | **Data Confidence**: `HIGH`  
+
+- **2025 Allocation**: ₱0.00 Billion
+- **2026 Allocation**: ₱1.87 Billion
+- **Absolute Delta**: ₱1.87 Billion (NEW IN 2026)
+
+#### What Changed & Why It Stands Out
+Automated inspection initiated for National Power Corporation's program 'Provision of adequate, sustainable, reliable and quality supply of electricity to Missionary Areas'. Allocation moved from ₱0.0M in 2025 to ₱1866.4M in 2026 (Delta: ₱1866.4M).
+
+#### Inspector Checks & Findings
+Autonomous inspection completed. Reconciled 2025 amount: ₱0.00, 2026 amount: ₱1,866,377,000.00.
+
+#### Provenance Citation
+- FY 2025: None
+- FY 2026: FY2026-GAA-Byobject.xlsx (Row 721784)
+
+#### Analytical Caveats
+- ⚠️ Appropriations represent budget authorization, not actual cash disbursements or completed contracts.
+
+#### Recommended Next Questions
+- 🔍 Inspect agency's Budget Priorities Framework justification.
+- 🔍 Check DBM Special Allotment Release Orders (SAROs).
+
+---
+
+### Case BI-2026-007: Autonomous Inspection: Additional Appropriation in Compliance with the Su
+**Department**: Budgetary Support to Government Corporations (BSGC) | **Agency**: Philippine Health Insurance Corporation  
+**Investigative Interest**: `HIGH` | **Data Confidence**: `HIGH`  
+
+- **2025 Allocation**: ₱0.00 Billion
+- **2026 Allocation**: ₱60.00 Billion
+- **Absolute Delta**: ₱60.00 Billion (NEW IN 2026)
+
+#### What Changed & Why It Stands Out
+Automated inspection initiated for Philippine Health Insurance Corporation's program 'Additional Appropriation in Compliance with the Supreme Court Decision'. Allocation moved from ₱0.0M in 2025 to ₱60000.0M in 2026 (Delta: ₱60000.0M).
+
+#### Inspector Checks & Findings
+Autonomous inspection completed. Reconciled 2025 amount: ₱0.00, 2026 amount: ₱60,000,000,000.00.
+
+#### Provenance Citation
+- FY 2025: None
+- FY 2026: FY2026-GAA-Byobject.xlsx (Row 721891)
+
+#### Analytical Caveats
+- ⚠️ Appropriations represent budget authorization, not actual cash disbursements or completed contracts.
+
+#### Recommended Next Questions
+- 🔍 Inspect agency's Budget Priorities Framework justification.
+- 🔍 Check DBM Special Allotment Release Orders (SAROs).
 
 ---
 

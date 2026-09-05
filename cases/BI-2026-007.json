@@ -1,0 +1,71 @@
+{
+  "case_id": "BI-2026-007",
+  "title": "Autonomous Inspection: Additional Appropriation in Compliance with the Su",
+  "initial_question": "Investigate spending shift in 'Additional Appropriation in Compliance with the Supreme Court Decision' under Philippine Health Insurance Corporation.",
+  "status": "LEAD",
+  "created_at": "2026-09-05T18:11:37.907032+00:00",
+  "updated_at": "2026-09-05T18:11:37.907047+00:00",
+  "investigative_interest": "HIGH",
+  "data_confidence": "HIGH",
+  "department_name": "Budgetary Support to Government Corporations (BSGC)",
+  "agency_name": "Philippine Health Insurance Corporation",
+  "prexc_fpap_id": "310100100003000",
+  "observation": "Automated inspection initiated for Philippine Health Insurance Corporation's program 'Additional Appropriation in Compliance with the Supreme Court Decision'. Allocation moved from ₱0.0M in 2025 to ₱60000.0M in 2026 (Delta: ₱60000.0M).",
+  "hypothesis": "Program expansion or sub-program consolidation across regional engineering/operating units.",
+  "amount_2025_pesos": 0.0,
+  "amount_2026_pesos": 60000000000.0,
+  "absolute_change_pesos": 60000000000.0,
+  "percent_change": null,
+  "queries_run": [
+    "SELECT * FROM pap_comparison WHERE agency_name = 'Philippine Health Insurance Corporation' AND description = 'Additional Appropriation in Compliance with the Supreme Court Decision';",
+    "SELECT * FROM budget_2025 WHERE agency_name = 'Philippine Health Insurance Corporation' AND description = 'Additional Appropriation in Compliance with the Supreme Court Decision';",
+    "SELECT * FROM budget_2026 WHERE agency_name = 'Philippine Health Insurance Corporation' AND description = 'Additional Appropriation in Compliance with the Supreme Court Decision';"
+  ],
+  "evidence_checks": [
+    {
+      "check": "Baseline Match",
+      "passed": false,
+      "result": "2025 record not present (NEW IN 2026)."
+    },
+    {
+      "check": "2026 Record Match",
+      "passed": true,
+      "result": "2026 record found."
+    },
+    {
+      "check": "Cell Provenance Trace",
+      "passed": true,
+      "result": "Source workbook and row numbers verified."
+    }
+  ],
+  "alternative_explanations": [
+    "Check whether sibling line items in the same agency lost equivalent funds.",
+    "Verify whether expense class was shifted from MOOE to Capital Outlay."
+  ],
+  "findings": "Autonomous inspection completed. Reconciled 2025 amount: ₱0.00, 2026 amount: ₱60,000,000,000.00.",
+  "caveats": [
+    "Appropriations represent budget authorization, not actual cash disbursements or completed contracts."
+  ],
+  "follow_up_questions": [
+    "Inspect agency's Budget Priorities Framework justification.",
+    "Check DBM Special Allotment Release Orders (SAROs)."
+  ],
+  "source_receipts": [],
+  "provenance_2025": [],
+  "provenance_2026": [
+    {
+      "fiscal_year": 2026,
+      "department_name": "Budgetary Support to Government Corporations (BSGC)",
+      "agency_name": "Philippine Health Insurance Corporation",
+      "prexc_fpap_id": "310100100003000",
+      "raw_description": "Additional Appropriation in Compliance with the Supreme Court Decision",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5021404000",
+      "object_description": "Budgetary Support to Government-Owned or Controlled Corporations",
+      "amount_pesos": 60000000000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 721891
+    }
+  ]
+}
