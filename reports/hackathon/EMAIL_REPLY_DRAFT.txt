@@ -51,7 +51,15 @@ Our team's agentic workflow operates on a strict separation of concerns:
 
 ---
 
-We look forward to collaborating with EJAP, DBM, and the civic tech community to advance open-budget transparency in the Philippines.
+### 🤝 Collaboration Addendum & Suggestions for Future Initiatives
+
+We hope this marks the beginning of long-term collaborations between Vibe Coders PH, EJAP, DBM, and open-data stakeholders. Here are a few future joint initiatives we would be excited to build together:
+
+1. **DBM Open Data API Pipeline**: Direct integration with DBM's Open Budget Portal to automatically ingest future GAA and NEP releases as soon as Excel workbooks are published.
+2. **Newsroom Workshops & Training**: Conducting hands-on training for EJAP journalists on how to execute natural-language budget queries and extract cell-level provenance for daily coverage.
+3. **Automated SARO & Allotment Tracking**: Extending our analytical engine from legislative appropriations (GAA) to actual allotments (SARO) and cash releases (NCA) as DBM releases real-time expenditure data.
+
+Please feel free to reach out to us at **kerwinarlan@gmail.com** and **agnasaljhone@gmail.com** for future joint initiatives, tool extensions, or newsroom workshops!
 
 Best regards,
 
