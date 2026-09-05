@@ -4,7 +4,7 @@ Hi Jaemark and the Budget Bot Hackathon Team,
 
 Thank you for hosting the Philippine Budget Bot AI Hackathon last June 27. It was an extraordinary workshop exploring how AI coding agents can transform public fiscal data inspection.
 
-On behalf of the entire **Vibe Coders PH** team, **Aljhone Agnas** and I (**Kerwin Arlan**) are proud to submit our team's post-hackathon deliverables, findings, and agentic workflows for your workshop documentation and international AI-in-media writeups.
+On behalf of **Team Vibe Coders PH**, **Aljhone Agnas** and I (**Kerwin Arlan**) are proud to submit our team's post-hackathon deliverables, findings, agentic workflows, and live web applications for your workshop documentation and international AI-in-media writeups.
 
 ---
 
@@ -23,20 +23,20 @@ When interrogating the enacted **FY 2025 GAA (R.A. 12116)** against the **FY 202
 
 ### 2. Our Team's Two Complementary Repositories
 
-To give newsrooms, watchdogs, and policy researchers both longitudinal depth and cell-level precision, **Team Vibe Coders PH** built a unified 2-part open-source investigative suite:
+To give newsrooms, watchdogs, and policy researchers both longitudinal depth and cell-level precision, **Team Vibe Coders PH** developed two complementary open-source investigative applications:
 
-#### Part A. Longitudinal 7-Year Anomaly Terminal (By Aljhone Agnas & Vibe Coders PH)
-- **Repository**: [`github.com/Aljeu/ph-budget-investigator`](https://github.com/Aljeu/ph-budget-investigator)
-- **Live Portal**: [`aljeu.github.io/ph-budget-investigator/`](https://aljeu.github.io/ph-budget-investigator/)
-- **Core Focus**: Longitudinal 7-year trend analysis across two presidential administrations (FY 2020–2026), 8 pre-analyzed anomaly sectors (CIF, MAIP, FMR, Ayuda volatility), SQLite FTS5 full-text search, and multi-year sparkline visualizations.
-
-#### Part B. Cell Provenance, Case Files & Newsroom Brief Desk (By Kerwin Arlan & Vibe Coders PH)
+#### A. Budget Inspector (By Kerwin Arlan & Team Vibe Coders PH)
 - **Repository**: [`github.com/kerwinarlan/budget-bot-hackathon-budget-inspector`](https://github.com/kerwinarlan/budget-bot-hackathon-budget-inspector)
-- **Live Portal**: [`kerwinarlan.github.io/budget-bot-hackathon-budget-inspector`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/)
+- **Live Web Application**: [`kerwinarlan.github.io/budget-bot-hackathon-budget-inspector`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/)
 - **Core Focus**: High-precision DuckDB cross-year reconciliation engine (100.0% exact match against official DBM totals), natural language Ambiguity Clarification Engine, cell-level row provenance, automated Case File generator (`BI-2026-001`), and multi-format Brief Report exporter (Markdown, Standalone HTML, and Print-Ready PDF).
 
+#### B. PH Budget Investigator (By Aljhone Agnas & Team Vibe Coders PH)
+- **Repository**: [`github.com/Aljeu/ph-budget-investigator`](https://github.com/Aljeu/ph-budget-investigator)
+- **Live Web Application**: [`aljeu.github.io/ph-budget-investigator/`](https://aljeu.github.io/ph-budget-investigator/)
+- **Core Focus**: Longitudinal 7-year trend analysis across two presidential administrations (FY 2020–2026), 8 pre-analyzed anomaly sectors (CIF, MAIP, FMR, Ayuda volatility), SQLite FTS5 full-text search, and multi-year sparkline visualizations.
+
 #### How Our Repositories Complement Each Other:
-Aljhone's engine provides the **macro 7-year historical trajectory (2020–2026)** across two administrations, while Kerwin's engine provides the **deep 2025↔2026 cell-level forensic breakdown**, exact DuckDB row reconciliation, and automated newsroom brief generation.
+Aljhone's **PH Budget Investigator** provides the **macro 7-year historical trajectory (2020–2026)** across presidential administrations, while Kerwin's **Budget Inspector** provides the **deep 2025↔2026 cell-level forensic breakdown**, exact DuckDB row reconciliation, and automated newsroom brief generation. Together, they form a unified 2-tier newsroom suite!
 
 ---
 
@@ -51,11 +51,11 @@ Our team's agentic workflow operates on a strict separation of concerns:
 ---
 
 ### 📁 Attached Team Deliverables (PDF & HTML Formats)
-- **PDF Brief Report**: [`reports/briefs/Budget_Inspector_Brief_001.pdf`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/briefs/Budget_Inspector_Brief_001.pdf)
-- **Standalone HTML Brief Report**: [`reports/briefs/Budget_Inspector_Brief_001.html`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/briefs/Budget_Inspector_Brief_001.html)
-- **Official Agency Audit Memorandum (PDF)**: [`reports/interrogative/Memorandum_bucor.pdf`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/interrogative/Memorandum_bucor.pdf)
-- **Official Agency Audit Memorandum (HTML)**: [`reports/interrogative/Memorandum_bucor.html`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/interrogative/Memorandum_bucor.html)
-- **Interactive Newsroom Desk Preview**: [`reports/hackathon/preview.html`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/hackathon/preview.html)
+- **PDF Brief Report**: [`Budget_Inspector_Brief_001.pdf`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/briefs/Budget_Inspector_Brief_001.pdf)
+- **Standalone HTML Brief Report**: [`Budget_Inspector_Brief_001.html`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/briefs/Budget_Inspector_Brief_001.html)
+- **Official Agency Audit Memorandum (PDF)**: [`Memorandum_bucor.pdf`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/interrogative/Memorandum_bucor.pdf)
+- **Official Agency Audit Memorandum (HTML)**: [`Memorandum_bucor.html`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/interrogative/Memorandum_bucor.html)
+- **Interactive Newsroom Desk Preview**: [`preview.html`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/reports/hackathon/preview.html)
 
 We look forward to collaborating with EJAP, DBM, and the civic tech community to advance open-budget transparency in the Philippines.
 
