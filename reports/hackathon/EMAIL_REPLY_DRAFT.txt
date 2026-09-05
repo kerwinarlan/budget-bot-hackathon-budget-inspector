@@ -57,4 +57,4 @@ Best regards,
 
 **Kerwin Arlan & Aljhone Agnas**  
 Vibe Coders PH  
-kaarlan@up.edu.ph
+kerwinarlan@gmail.com | agnasaljhone@gmail.com

@@ -9,7 +9,8 @@ description = "An evidence-first investigative agent for the Philippine national
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
-  { name = "Vibe Coders Team", email = "kaarlan@up.edu.ph" }
+  { name = "Kerwin Arlan", email = "kerwinarlan@gmail.com" },
+  { name = "Aljhone Agnas", email = "agnasaljhone@gmail.com" }
 ]
 dependencies = [
   "duckdb>=1.0.0",
@@ -26,7 +27,8 @@ dependencies = [
   "fastapi>=0.100.0",
   "jinja2>=3.1.0",
   "uvicorn>=0.20.0",
-  "python-multipart>=0.0.6"
+  "python-multipart>=0.0.6",
+  "markdown>=3.5.0"
 ]
 
 [project.optional-dependencies]
