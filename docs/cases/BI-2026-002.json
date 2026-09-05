@@ -1,0 +1,59 @@
+{
+  "case_id": "BI-2026-002",
+  "title": "PhilHealth ₱60B SC Mandate & ₱53.1B Sin Tax Subsidies Realignment",
+  "initial_question": "What major new appropriations appeared in the 2026 budget that had no baseline in 2025?",
+  "status": "NEEDS_FOLLOW_UP",
+  "created_at": "2026-09-06T00:00:00Z",
+  "updated_at": "2026-09-06T00:00:00Z",
+  "investigative_interest": "HIGH",
+  "data_confidence": "HIGH",
+  "department_name": "Corporations / GOCC Subsidies",
+  "agency_name": "Philippine Health Insurance Corporation",
+  "prexc_fpap_id": "100000000000000",
+  "observation": "Two major subsidy lines totaling ₱113.13 Billion appear for PhilHealth in FY 2026: ₱60.00 Billion for Supreme Court mandate compliance and ₱53.13 Billion for Sin Tax health coverage.",
+  "hypothesis": "The ₱60B line item reflects statutory obligations stemming from legal petitions regarding unutilized PhilHealth reserve transfers back to the National Treasury.",
+  "amount_2025_pesos": 0.0,
+  "amount_2026_pesos": 60000000000.0,
+  "absolute_change_pesos": 60000000000.0,
+  "percent_change": null,
+  "queries_run": [
+    "SELECT * FROM pap_comparison WHERE change_status = 'NEW_IN_2026' AND agency_name = 'Philippine Health Insurance Corporation';",
+    "SELECT * FROM budget_2026 WHERE agency_name = 'Philippine Health Insurance Corporation';"
+  ],
+  "evidence_checks": [
+    {
+      "check": "New Item Status",
+      "passed": true,
+      "result": "Confirmed 0.00 baseline in 2025 GAA workbook."
+    },
+    {
+      "check": "2026 Enacted Match",
+      "passed": true,
+      "result": "Confirmed ₱60,000,000,000.00 entry at row 720102."
+    },
+    {
+      "check": "Legal Precedent Verification",
+      "passed": true,
+      "result": "Matched line description wording explicitly referencing Supreme Court mandate."
+    }
+  ],
+  "alternative_explanations": [
+    "Verify whether these funds replace previously off-budget reserve drawdowns.",
+    "Check whether Sin Tax revenues were previously budgeted under DOH Office of the Secretary."
+  ],
+  "findings": "PhilHealth received one of the largest newly introduced GOCC subsidy line items in FY 2026, establishing a major fiscal precedent following Supreme Court petitions.",
+  "caveats": [
+    "GOCC subsidies are subject to special release conditions issued by DBM and DOH.",
+    "Subsidies do not constitute direct cash disbursements to healthcare providers until claims are processed."
+  ],
+  "follow_up_questions": [
+    "Did DOH's direct health insurance budget decrease correspondingly in FY 2026?",
+    "What specific benefit package expansions are mandated under the ₱60B release terms?",
+    "Inspect Supreme Court ruling text regarding Treasury fund return timelines."
+  ],
+  "source_receipts": [
+    "queries/investigations/receipt_lead_new_003.json"
+  ],
+  "provenance_2025": [],
+  "provenance_2026": []
+}

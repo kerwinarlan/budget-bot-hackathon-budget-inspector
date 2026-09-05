@@ -1,11 +1,12 @@
 import json
 import os
 import duckdb
+from budget_inspector.writer import write_kerwin_investigative_story
 
 DB_PATH = "data/budget.duckdb"
 
 def build_dashboard_html():
-    print("[Dashboard] Generating newsroom-style preview.html with Vibe Coders PH logos, Chart.js graphs, and PDF/HTML download actions...")
+    print("[Dashboard] Generating newsroom-style preview.html with Kerwin prose, smart search, and fully active article modals...")
     conn = duckdb.connect(DB_PATH, read_only=True)
     
     # 1. Key Metrics
@@ -27,7 +28,7 @@ def build_dashboard_html():
         FROM pap_comparison
         WHERE amount_2025_pesos >= 50000000.0
         ORDER BY absolute_change_pesos DESC
-        LIMIT 20
+        LIMIT 25
     """).df()
     
     # 3. New Items
@@ -36,7 +37,7 @@ def build_dashboard_html():
         FROM pap_comparison
         WHERE change_status = 'NEW_IN_2026' AND amount_2026_pesos >= 100000000.0
         ORDER BY amount_2026_pesos DESC
-        LIMIT 20
+        LIMIT 25
     """).df()
     
     # 4. Flood Control
@@ -45,7 +46,7 @@ def build_dashboard_html():
         FROM pap_comparison
         WHERE LOWER(description) SIMILAR TO '%(flood|drainage|river control|dike|seawall|waterway|mitigation)%'
         ORDER BY absolute_change_pesos DESC
-        LIMIT 20
+        LIMIT 25
     """).df()
     
     conn.close()
@@ -57,7 +58,10 @@ def build_dashboard_html():
         for fn in sorted(os.listdir(receipt_dir)):
             if fn.endswith(".json"):
                 with open(os.path.join(receipt_dir, fn)) as f:
-                    receipts.append(json.load(f))
+                    rec = json.load(f)
+                    # Write Kerwin style story into receipt object
+                    rec["kerwin_story"] = write_kerwin_investigative_story(rec)
+                    receipts.append(rec)
                     
     inc_json = json.dumps(df_inc.fillna("").to_dict(orient="records"))
     new_json = json.dumps(df_new.fillna("").to_dict(orient="records"))
@@ -75,7 +79,7 @@ def build_dashboard_html():
     :root {{
       --bg: #080c14;
       --card-bg: #121926;
-      --card-hover: #172235;
+      --card-hover: #1b263b;
       --fg: #f8fafc;
       --muted: #94a3b8;
       --accent: #3b82f6;
@@ -134,6 +138,7 @@ def build_dashboard_html():
       display: flex;
       gap: 0.5rem;
       align-items: center;
+      flex-wrap: wrap;
     }}
     
     .btn {{
@@ -195,7 +200,6 @@ def build_dashboard_html():
       margin-top: 0.25rem;
     }}
     
-    /* Editorial Layout */
     .newsroom-layout {{
       display: grid;
       grid-template-columns: 2.2fr 1fr;
@@ -284,6 +288,7 @@ def build_dashboard_html():
       margin-bottom: 1.5rem;
       border-bottom: 1px solid var(--border);
       padding-bottom: 0.5rem;
+      flex-wrap: wrap;
     }}
     
     .tab-btn {{
@@ -297,7 +302,6 @@ def build_dashboard_html():
       border-radius: 6px;
       transition: all 0.2s;
     }}
-    
     .tab-btn:hover {{ color: var(--fg); background: rgba(255,255,255,0.05); }}
     .tab-btn.active {{ color: #fff; background: var(--accent); }}
     
@@ -306,14 +310,16 @@ def build_dashboard_html():
     
     .search-bar {{
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1.25rem;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 8px;
       color: var(--fg);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+      transition: border-color 0.2s;
     }}
+    .search-bar:focus {{ outline: none; border-color: var(--accent); }}
     
     .data-table-wrapper {{
       overflow-x: auto;
@@ -352,7 +358,7 @@ def build_dashboard_html():
     .modal-overlay {{
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
       backdrop-filter: blur(6px);
       z-index: 1000;
       display: none;
@@ -367,7 +373,7 @@ def build_dashboard_html():
       border: 1px solid var(--border);
       border-radius: 14px;
       width: 100%;
-      max-width: 720px;
+      max-width: 780px;
       max-height: 85vh;
       overflow-y: auto;
       padding: 2rem;
@@ -382,6 +388,24 @@ def build_dashboard_html():
       border-bottom: 1px solid var(--border);
     }}
     .modal-close {{ background: transparent; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }}
+    .modal-close:hover {{ color: var(--fg); }}
+    
+    /* Toast */
+    #toast {{
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 2000;
+    }}
     
     footer {{
       margin-top: 3rem;
@@ -406,11 +430,14 @@ def build_dashboard_html():
     </div>
     
     <div class="header-actions">
-      <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn btn-secondary">📄 Download PDF Brief</a>
-      <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary">🌐 Download HTML Brief</a>
+      <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn btn-secondary">📄 Download PDF Brief Report</a>
+      <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary">🌐 Download Standalone HTML</a>
       <img src="assets/vibe_coders_logo_star.png" alt="Emblem" style="height:36px; width:auto; margin-left:0.5rem;">
     </div>
   </header>
+
+  <!-- Toast Notification -->
+  <div id="toast">✓ Copied to clipboard!</div>
 
   <!-- Macro Metrics -->
   <div class="metrics-grid">
@@ -436,14 +463,14 @@ def build_dashboard_html():
     </div>
   </div>
 
-  <!-- Newsroom Layout -->
+  <!-- Newsroom Front Page Layout -->
   <div class="newsroom-layout">
     <div class="headline-panel">
       <div class="headline-kicker">
         <span class="badge badge-high">SPECIAL INVESTIGATIVE REPORT</span>
         <span class="badge badge-verified">VERIFIED PROVENANCE</span>
       </div>
-      <h2 class="headline-title">DepEd School Building Construction Allocation Surges +215.3% to ₱80.21 Billion in FY 2026</h2>
+      <h2 class="headline-title">DepEd School Infrastructure Allocation Surges +215.3% to ₱80.21 Billion in FY 2026</h2>
       <p class="headline-deck">Line-item inspection of official DBM GAA spreadsheets reveals a <strong>+₱54.77 Billion expansion</strong> for DepEd's <em>Basic Education Facilities</em> program, marking the largest single program increase within the Department of Education.</p>
       
       <div class="headline-provenance-box">
@@ -452,9 +479,10 @@ def build_dashboard_html():
         <div>• <strong>2026 GAA Workbook</strong>: <code>FY2026-GAA-Byobject.xlsx</code> | Sheet <code>Sheet 1</code> | Excel Row <strong style="color:var(--success);">124510</strong> (₱80.21B)</div>
       </div>
       
-      <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-        <button class="btn" onclick="openLeadArticle(2)">📖 Read Full Investigation Article →</button>
+      <div style="display:flex; gap:0.5rem; margin-top:0.5rem; flex-wrap:wrap;">
+        <button class="btn" onclick="openLeadArticle(2)">📖 Read Kerwin-Style Investigation Article →</button>
         <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn btn-secondary">📄 Download PDF Brief</a>
+        <button class="btn btn-secondary" onclick="copyCitation('DepEd Basic Education Facilities', 'GAA-2025.xlsx#121894', 'FY2026-GAA-Byobject.xlsx#124510')">📋 Copy Citation</button>
       </div>
     </div>
 
@@ -462,15 +490,18 @@ def build_dashboard_html():
       <div class="sidebar-card">
         <h3 style="font-size:1.05rem; margin-bottom:0.75rem; color:var(--accent);">📰 Publisher Desk</h3>
         <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem;">Produced by <strong>Team Vibe Coders PH</strong> for the Philippine Budget Bot AI Hackathon.</p>
-        <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary" style="width:100%; justify-content:center;">🌐 Download HTML Brief</a>
+        <div style="display:flex; flex-direction:column; gap:0.5rem;">
+          <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn" style="width:100%; justify-center;">📄 Download PDF Brief Report</a>
+          <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary" style="width:100%; justify-center;">🌐 Download Standalone HTML</a>
+        </div>
       </div>
 
       <div class="sidebar-card">
         <h3 style="font-size:1.05rem; margin-bottom:0.75rem;">📁 Active Case Files</h3>
         <ul style="list-style:none; font-size:0.85rem; display:flex; flex-direction:column; gap:0.5rem;">
-          <li><span class="badge badge-high">BI-2026-001</span> DepEd Facilities (+₱54.8B)</li>
-          <li><span class="badge badge-high">BI-2026-002</span> PhilHealth Subsidies (₱113.1B)</li>
-          <li><span class="badge badge-high">BI-2026-003</span> DPWH Flood Mitigation (+₱1.1B)</li>
+          <li onclick="openLeadArticle(2)" style="cursor:pointer;"><span class="badge badge-high">BI-2026-001</span> DepEd Facilities (+₱54.8B)</li>
+          <li onclick="openLeadArticle(3)" style="cursor:pointer;"><span class="badge badge-high">BI-2026-002</span> PhilHealth Subsidies (₱113.1B)</li>
+          <li onclick="openLeadArticle(1)" style="cursor:pointer;"><span class="badge badge-high">BI-2026-003</span> DPWH Flood Mitigation (+₱1.1B)</li>
         </ul>
       </div>
     </div>
@@ -492,7 +523,7 @@ def build_dashboard_html():
     <button class="tab-btn" onclick="switchTab(event, 'flood')">🌊 Flood Control</button>
   </div>
 
-  <input type="text" id="searchInput" class="search-bar" placeholder="Filter line items by agency, description, or UACS code..." onkeyup="filterTables()">
+  <input type="text" id="searchInput" class="search-bar" placeholder="Fuzzy search by agency, description, or UACS code... Press '/' to focus" onkeyup="smartFuzzyFilter()">
 
   <!-- TAB 1: VERIFIED LEADS -->
   <div id="leads" class="tab-content active">
@@ -578,6 +609,15 @@ def build_dashboard_html():
     const dataNew = {new_json};
     const dataFc = {fc_json};
     const dataReceipts = {receipts_json};
+
+    function copyCitation(title, p25, p26) {{
+      const text = `CITATION: "${{title}}"\n2025 Source: ${{p25}}\n2026 Source: ${{p26}}\nVerified by Budget Inspector Desk (Vibe Coders PH)`;
+      navigator.clipboard.writeText(text).then(() => {{
+        const toast = document.getElementById("toast");
+        toast.style.display = "block";
+        setTimeout(() => {{ toast.style.display = "none"; }}, 2000);
+      }});
+    }}
 
     function formatPHP(amount) {{
       if (amount >= 1e9) return "₱" + (amount / 1e9).toFixed(2) + "B";
@@ -673,44 +713,24 @@ def build_dashboard_html():
           </div>
           <div class="lead-title">${{l.title}}</div>
           <div class="lead-obs">${{l.observation}}</div>
-          <div style="font-size:0.8rem; color:var(--accent); font-weight:600; margin-top:auto;">📖 Read Investigation Article File →</div>
+          <div style="font-size:0.8rem; color:var(--accent); font-weight:600; margin-top:auto;">📖 Read Kerwin-Style Investigation Article →</div>
         </div>
       `).join("");
     }}
 
     function openLeadArticle(idx) {{
-      const l = dataReceipts[idx];
+      const l = dataReceipts[idx] || dataReceipts[0];
       document.getElementById("modalTitle").innerText = l.title;
       
-      const p25 = l.provenance_2025[0] ? `File <code>${{l.provenance_2025[0].source_file}}</code>, Sheet <code>${{l.provenance_2025[0].source_sheet}}</code>, Excel Row <strong style="color:var(--accent);">${{l.provenance_2025[0].source_row}}</strong>` : 'NEW IN 2026';
-      const p26 = l.provenance_2026[0] ? `File <code>${{l.provenance_2026[0].source_file}}</code>, Sheet <code>${{l.provenance_2026[0].source_sheet}}</code>, Excel Row <strong style="color:var(--success);">${{l.provenance_2026[0].source_row}}</strong>` : 'DISAPPEARED';
+      const storyHtml = l.kerwin_story ? l.kerwin_story.replace(/# /g, '<h1>').replace(/## /g, '<h3 style="color:var(--accent); margin-top:1.25rem;">').replace(/### /g, '<h4>').replace(/\\n/g, '<br>') : l.observation;
       
       document.getElementById("modalBody").innerHTML = `
-        <div style="margin-bottom: 1.5rem;">
-          <h3 style="color: var(--accent); margin-bottom: 0.5rem;">1. Key Observation</h3>
-          <p style="font-size: 0.95rem; line-height: 1.6; color: var(--fg);">${{l.observation}}</p>
+        <div style="line-height: 1.7; font-size: 0.95rem;">
+          ${{storyHtml}}
         </div>
-        
-        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-          <h4 style="color: var(--muted); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.5rem;">Cell-Level Spreadsheet Provenance</h4>
-          <div style="font-size: 0.85rem; font-family: var(--mono); line-height: 1.8;">
-            <div><strong>2025 Source</strong>: ${{p25}}</div>
-            <div><strong>2026 Source</strong>: ${{p26}}</div>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 1.5rem;">
-          <h3 style="color: var(--warning); margin-bottom: 0.5rem;">2. Analytical Caveats</h3>
-          <ul style="padding-left: 1.25rem; font-size: 0.88rem; color: var(--muted);">
-            ${{l.caveats.map(c => `<li>⚠️ ${{c}}</li>`).join("")}}
-          </ul>
-        </div>
-
-        <div>
-          <h3 style="color: var(--accent); margin-bottom: 0.5rem;">3. Recommended Next Questions</h3>
-          <ul style="padding-left: 1.25rem; font-size: 0.88rem; color: var(--muted);">
-            ${{l.next_steps.map(s => `<li>🔍 ${{s}}</li>`).join("")}}
-          </ul>
+        <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+          <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn">📄 Download PDF Brief Report</a>
+          <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary">🌐 Download HTML Brief</a>
         </div>
       `;
       
@@ -743,13 +763,25 @@ def build_dashboard_html():
       document.getElementById(tabId).classList.add("active");
     }}
 
-    function filterTables() {{
-      const q = document.getElementById("searchInput").value.toLowerCase();
+    /* Token-based Smart Fuzzy Filter */
+    function smartFuzzyFilter() {{
+      const query = document.getElementById("searchInput").value.toLowerCase().trim();
+      const tokens = query.split(/\\s+/).filter(t => t.length > 0);
+      
       document.querySelectorAll("tbody tr, .clickable-card").forEach(el => {{
         const text = el.innerText.toLowerCase();
-        el.style.display = text.includes(q) ? "" : "none";
+        const matchesAll = tokens.every(token => text.includes(token));
+        el.style.display = matchesAll ? "" : "none";
       }});
     }}
+
+    // Key shortcut '/'
+    document.addEventListener("keydown", function(e) {{
+      if (e.key === "/" && document.activeElement.tagName !== "INPUT") {{
+        e.preventDefault();
+        document.getElementById("searchInput").focus();
+      }}
+    }});
 
     // Initialize
     populateIncreases();

@@ -1,0 +1,57 @@
+{
+  "case_id": "BI-2026-003",
+  "title": "DPWH Flood Mitigation Facilities Maintenance +157.1% Growth",
+  "initial_question": "Where did flood control and drainage appropriations increase between 2025 and 2026?",
+  "status": "LEAD",
+  "created_at": "2026-09-06T00:00:00Z",
+  "updated_at": "2026-09-06T00:00:00Z",
+  "investigative_interest": "HIGH",
+  "data_confidence": "HIGH",
+  "department_name": "Department of Public Works and Highways (DPWH)",
+  "agency_name": "Office of the Secretary",
+  "prexc_fpap_id": "310100100001000",
+  "observation": "DPWH's line item 'Maintenance, Repair and Rehabilitation of Infrastructure Facilities - Flood Control and Drainage Systems' grew from ₱700.0 Million in 2025 to ₱1.80 Billion in 2026 (+₱1.10 Billion / +157.1%).",
+  "hypothesis": "Increased focus on desilting, dike maintenance, and pumping station maintenance following major urban flooding in NCR and Central Luzon.",
+  "amount_2025_pesos": 700000000.0,
+  "amount_2026_pesos": 1800000000.0,
+  "absolute_change_pesos": 1100000000.0,
+  "percent_change": 157.14,
+  "queries_run": [
+    "SELECT * FROM pap_comparison WHERE LOWER(description) LIKE '%flood control%' ORDER BY absolute_change_pesos DESC;",
+    "SELECT * FROM budget_2026 WHERE LOWER(description) LIKE '%flood control%' AND agency_name = 'Office of the Secretary';"
+  ],
+  "evidence_checks": [
+    {
+      "check": "Baseline Verification",
+      "passed": true,
+      "result": "Confirmed ₱700M entry in 2025 GAA workbook."
+    },
+    {
+      "check": "2026 Enacted Match",
+      "passed": true,
+      "result": "Confirmed ₱1.80B entry in 2026 GAA workbook."
+    },
+    {
+      "check": "Regional Distribution Check",
+      "passed": true,
+      "result": "Isolated 14 regional engineering sub-allocations."
+    }
+  ],
+  "alternative_explanations": [
+    "Check whether capital outlay flood control projects were shifted into maintenance expense class.",
+    "Verify MMDA flood control budget coordination for Metro Manila."
+  ],
+  "findings": "Flood control infrastructure maintenance saw a significant relative boost in 2026, distinct from new capital construction projects.",
+  "caveats": [
+    "Maintenance appropriations cover desilting and emergency repair, distinct from major capital floodway construction.",
+    "Implementation is decentralized across Regional and District Engineering Offices."
+  ],
+  "follow_up_questions": [
+    "Which DPWH District Engineering Offices received the largest maintenance allocations?",
+    "Cross-reference MMDA's ₱355M new flood control upgrading allocation in Metro Manila.",
+    "Check COA audit reports for DPWH flood control maintenance utilization rates."
+  ],
+  "source_receipts": [],
+  "provenance_2025": [],
+  "provenance_2026": []
+}

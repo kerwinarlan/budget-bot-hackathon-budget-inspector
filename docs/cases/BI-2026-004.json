@@ -1,0 +1,86 @@
+{
+  "case_id": "BI-2026-004",
+  "title": "Autonomous Inspection: Maintenance, Repair and Rehabilitation of Infrastr",
+  "initial_question": "Investigate spending shift in 'Maintenance, Repair and Rehabilitation of Infrastructure Facilities and Other Related Activities - Maintenance, Repair and Rehabilitation of Infrastructure Facilities - Flood Control and Drainage Systems, Structures and Related Facilities' under Office of the Secretary.",
+  "status": "LEAD",
+  "created_at": "2026-09-05T17:44:00.796039+00:00",
+  "updated_at": "2026-09-05T17:44:00.796044+00:00",
+  "investigative_interest": "HIGH",
+  "data_confidence": "HIGH",
+  "department_name": "Department of Public Works and Highways (DPWH)",
+  "agency_name": "Office of the Secretary",
+  "prexc_fpap_id": "200000100020000",
+  "observation": "Automated inspection initiated for Office of the Secretary's program 'Maintenance, Repair and Rehabilitation of Infrastructure Facilities and Other Related Activities - Maintenance, Repair and Rehabilitation of Infrastructure Facilities - Flood Control and Drainage Systems, Structures and Related Facilities'. Allocation moved from ₱700.0M in 2025 to ₱1800.0M in 2026 (Delta: ₱1100.0M).",
+  "hypothesis": "Program expansion or sub-program consolidation across regional engineering/operating units.",
+  "amount_2025_pesos": 700000000.0,
+  "amount_2026_pesos": 1800000000.0,
+  "absolute_change_pesos": 1100000000.0,
+  "percent_change": 157.14285714285714,
+  "queries_run": [
+    "SELECT * FROM pap_comparison WHERE agency_name = 'Office of the Secretary' AND description = 'Maintenance, Repair and Rehabilitation of Infrastructure Facilities and Other Related Activities - Maintenance, Repair and Rehabilitation of Infrastructure Facilities - Flood Control and Drainage Systems, Structures and Related Facilities';",
+    "SELECT * FROM budget_2025 WHERE agency_name = 'Office of the Secretary' AND description = 'Maintenance, Repair and Rehabilitation of Infrastructure Facilities and Other Related Activities - Maintenance, Repair and Rehabilitation of Infrastructure Facilities - Flood Control and Drainage Systems, Structures and Related Facilities';",
+    "SELECT * FROM budget_2026 WHERE agency_name = 'Office of the Secretary' AND description = 'Maintenance, Repair and Rehabilitation of Infrastructure Facilities and Other Related Activities - Maintenance, Repair and Rehabilitation of Infrastructure Facilities - Flood Control and Drainage Systems, Structures and Related Facilities';"
+  ],
+  "evidence_checks": [
+    {
+      "check": "Baseline Match",
+      "passed": true,
+      "result": "2025 record found."
+    },
+    {
+      "check": "2026 Record Match",
+      "passed": true,
+      "result": "2026 record found."
+    },
+    {
+      "check": "Cell Provenance Trace",
+      "passed": true,
+      "result": "Source workbook and row numbers verified."
+    }
+  ],
+  "alternative_explanations": [
+    "Check whether sibling line items in the same agency lost equivalent funds.",
+    "Verify whether expense class was shifted from MOOE to Capital Outlay."
+  ],
+  "findings": "Autonomous inspection completed. Reconciled 2025 amount: ₱700,000,000.00, 2026 amount: ₱1,800,000,000.00.",
+  "caveats": [
+    "Appropriations represent budget authorization, not actual cash disbursements or completed contracts."
+  ],
+  "follow_up_questions": [
+    "Inspect agency's Budget Priorities Framework justification.",
+    "Check DBM Special Allotment Release Orders (SAROs)."
+  ],
+  "source_receipts": [],
+  "provenance_2025": [
+    {
+      "fiscal_year": 2025,
+      "department_name": "Department of Public Works and Highways (DPWH)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "200000100020000",
+      "raw_description": "Maintenance, Repair and Rehabilitation of Infrastructure Facilities and Other Related Activities    -    Maintenance, Repair and Rehabilitation of Infrastructure Facilities    -    Flood Control and Drainage Systems, Structures and Related Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5021303002",
+      "object_description": "Flood Control Systems",
+      "amount_pesos": 700000000.0,
+      "source_file": "GAA-2025.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 485386
+    }
+  ],
+  "provenance_2026": [
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Public Works and Highways (DPWH)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "200000100020000",
+      "raw_description": "Maintenance, Repair and Rehabilitation of Infrastructure Facilities and Other Related Activities    -    Maintenance, Repair and Rehabilitation of Infrastructure Facilities    -    Flood Control and Drainage Systems, Structures and Related Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5021303000",
+      "object_description": "Repairs and Maintenance - Infrastructure Assets",
+      "amount_pesos": 1800000000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 482195
+    }
+  ]
+}
