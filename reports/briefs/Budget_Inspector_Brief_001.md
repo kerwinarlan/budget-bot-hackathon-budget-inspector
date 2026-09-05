@@ -11,7 +11,7 @@
 
 The enacted **FY 2026 General Appropriations Act (GAA, R.A. 12314)** authorizes **₱6.793 Trillion** in national government expenditure. This represents a net expansion of **+₱466.84 Billion (+7.38%)** over the **FY 2025 GAA (₱6.326 Trillion)**.
 
-While headline agency totals suggest steady growth across major departments, deep line-item inspection reveals significant internal program shifts, major infrastructure reallocations, and newly introduced GOCC subsidy line items.
+While headline agency growth remained stable across major departments, deep line-item inspection reveals significant internal program shifts, major infrastructure reallocations, and newly introduced GOCC subsidy line items.
 
 Below are three verified investigative case files examined by the Budget Inspector desk.
 
@@ -32,8 +32,8 @@ DepEd's 'Basic Education Facilities' allocation expanded from ₱25.44 Billion i
 This line item represents the largest single program increase within the Department of Education for FY 2026. Data confidence is 100% exact across both GAA workbooks.
 
 #### Cell-Level Provenance Citation
-- **FY 2025 Source**: File `GAA-2025.xlsx`, Sheet `Sheet 1`, Excel Row `67075`
-- **FY 2026 Source**: File `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `65657`
+- **FY 2025 Source**: Workbook `GAA-2025.xlsx`, Sheet `Sheet 1`, Excel Row `67075`
+- **FY 2026 Source**: Workbook `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `65657`
 
 #### Analytical Caveats
 - ⚠️ An appropriation increase grants expenditure authority but does not indicate actual procurement contract awards.
@@ -119,8 +119,8 @@ Automated inspection initiated for Office of the Secretary's program 'Maintenanc
 Autonomous inspection completed. Reconciled 2025 amount: ₱700,000,000.00, 2026 amount: ₱1,800,000,000.00.
 
 #### Cell-Level Provenance Citation
-- **FY 2025 Source**: File `GAA-2025.xlsx`, Sheet `Sheet 1`, Excel Row `485386`
-- **FY 2026 Source**: File `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `482195`
+- **FY 2025 Source**: Workbook `GAA-2025.xlsx`, Sheet `Sheet 1`, Excel Row `485386`
+- **FY 2026 Source**: Workbook `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `482195`
 
 #### Analytical Caveats
 - ⚠️ Appropriations represent budget authorization, not actual cash disbursements or completed contracts.
@@ -147,7 +147,7 @@ Autonomous inspection completed. Reconciled 2025 amount: ₱0.00, 2026 amount: �
 
 #### Cell-Level Provenance Citation
 - **FY 2025 Source**: None (`NEW_IN_2026`)
-- **FY 2026 Source**: File `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `721784`
+- **FY 2026 Source**: Workbook `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `721784`
 
 #### Analytical Caveats
 - ⚠️ Appropriations represent budget authorization, not actual cash disbursements or completed contracts.
@@ -174,7 +174,7 @@ Autonomous inspection completed. Reconciled 2025 amount: ₱0.00, 2026 amount: �
 
 #### Cell-Level Provenance Citation
 - **FY 2025 Source**: None (`NEW_IN_2026`)
-- **FY 2026 Source**: File `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `721784`
+- **FY 2026 Source**: Workbook `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `721784`
 
 #### Analytical Caveats
 - ⚠️ Appropriations represent budget authorization, not actual cash disbursements or completed contracts.
@@ -201,7 +201,7 @@ Autonomous inspection completed. Reconciled 2025 amount: ₱0.00, 2026 amount: �
 
 #### Cell-Level Provenance Citation
 - **FY 2025 Source**: None (`NEW_IN_2026`)
-- **FY 2026 Source**: File `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `721891`
+- **FY 2026 Source**: Workbook `FY2026-GAA-Byobject.xlsx`, Sheet `Sheet 1`, Excel Row `721891`
 
 #### Analytical Caveats
 - ⚠️ Appropriations represent budget authorization, not actual cash disbursements or completed contracts.

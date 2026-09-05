@@ -1,12 +1,13 @@
 import json
 import os
 import duckdb
+import markdown
 from budget_inspector.writer import write_kerwin_investigative_story
 
 DB_PATH = "data/budget.duckdb"
 
 def build_dashboard_html():
-    print("[Dashboard] Generating newsroom-style preview.html with Kerwin prose, smart search, and fully active article modals...")
+    print("[Dashboard] Generating newsroom-style preview.html with Markdown rendering and smart multi-token search...")
     conn = duckdb.connect(DB_PATH, read_only=True)
     
     # 1. Key Metrics
@@ -51,7 +52,7 @@ def build_dashboard_html():
     
     conn.close()
     
-    # Load Research Receipts & Case Files
+    # Load Research Receipts & Case Files, rendering Markdown to clean HTML
     receipts = []
     receipt_dir = "queries/investigations"
     if os.path.exists(receipt_dir):
@@ -59,8 +60,9 @@ def build_dashboard_html():
             if fn.endswith(".json"):
                 with open(os.path.join(receipt_dir, fn)) as f:
                     rec = json.load(f)
-                    # Write Kerwin style story into receipt object
-                    rec["kerwin_story"] = write_kerwin_investigative_story(rec)
+                    md_story = write_kerwin_investigative_story(rec)
+                    # Convert markdown story into rendered HTML
+                    rec["rendered_html"] = markdown.markdown(md_story, extensions=['fenced_code', 'tables', 'nl2br'])
                     receipts.append(rec)
                     
     inc_json = json.dumps(df_inc.fillna("").to_dict(orient="records"))
@@ -79,7 +81,7 @@ def build_dashboard_html():
     :root {{
       --bg: #080c14;
       --card-bg: #121926;
-      --card-hover: #1b263b;
+      --card-hover: #172235;
       --fg: #f8fafc;
       --muted: #94a3b8;
       --accent: #3b82f6;
@@ -373,12 +375,21 @@ def build_dashboard_html():
       border: 1px solid var(--border);
       border-radius: 14px;
       width: 100%;
-      max-width: 780px;
+      max-width: 800px;
       max-height: 85vh;
       overflow-y: auto;
       padding: 2rem;
+      line-height: 1.6;
     }}
     
+    .modal-card h1 {{ font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--fg); }}
+    .modal-card h2 {{ font-size: 1.2rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }}
+    .modal-card h3 {{ font-size: 1.05rem; margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--fg); }}
+    .modal-card p {{ margin-bottom: 0.75rem; color: var(--fg); }}
+    .modal-card ul {{ padding-left: 1.25rem; margin-bottom: 0.75rem; color: var(--muted); }}
+    .modal-card pre {{ background: rgba(0,0,0,0.4); padding: 0.85rem; border-radius: 6px; overflow-x: auto; font-family: var(--mono); font-size: 0.82rem; margin-bottom: 1rem; border: 1px solid var(--border); }}
+    .modal-card code {{ background: rgba(255,255,255,0.08); padding: 0.15rem 0.35rem; border-radius: 4px; font-family: var(--mono); font-size: 0.85rem; }}
+
     .modal-header {{
       display: flex;
       justify-content: space-between;
@@ -390,7 +401,6 @@ def build_dashboard_html():
     .modal-close {{ background: transparent; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }}
     .modal-close:hover {{ color: var(--fg); }}
     
-    /* Toast */
     #toast {{
       position: fixed;
       bottom: 2rem;
@@ -436,7 +446,6 @@ def build_dashboard_html():
     </div>
   </header>
 
-  <!-- Toast Notification -->
   <div id="toast">✓ Copied to clipboard!</div>
 
   <!-- Macro Metrics -->
@@ -491,8 +500,8 @@ def build_dashboard_html():
         <h3 style="font-size:1.05rem; margin-bottom:0.75rem; color:var(--accent);">📰 Publisher Desk</h3>
         <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem;">Produced by <strong>Team Vibe Coders PH</strong> for the Philippine Budget Bot AI Hackathon.</p>
         <div style="display:flex; flex-direction:column; gap:0.5rem;">
-          <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn" style="width:100%; justify-center;">📄 Download PDF Brief Report</a>
-          <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary" style="width:100%; justify-center;">🌐 Download Standalone HTML</a>
+          <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn" style="width:100%; justify-content:center;">📄 Download PDF Brief Report</a>
+          <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary" style="width:100%; justify-content:center;">🌐 Download Standalone HTML</a>
         </div>
       </div>
 
@@ -523,7 +532,7 @@ def build_dashboard_html():
     <button class="tab-btn" onclick="switchTab(event, 'flood')">🌊 Flood Control</button>
   </div>
 
-  <input type="text" id="searchInput" class="search-bar" placeholder="Fuzzy search by agency, description, or UACS code... Press '/' to focus" onkeyup="smartFuzzyFilter()">
+  <input type="text" id="searchInput" class="search-bar" placeholder="Smart search across all articles, agencies, descriptions, or UACS codes... Press '/' to focus" onkeyup="smartFuzzyFilter()">
 
   <!-- TAB 1: VERIFIED LEADS -->
   <div id="leads" class="tab-content active">
@@ -713,7 +722,7 @@ def build_dashboard_html():
           </div>
           <div class="lead-title">${{l.title}}</div>
           <div class="lead-obs">${{l.observation}}</div>
-          <div style="font-size:0.8rem; color:var(--accent); font-weight:600; margin-top:auto;">📖 Read Kerwin-Style Investigation Article →</div>
+          <div style="font-size:0.8rem; color:var(--accent); font-weight:600; margin-top:auto;">📖 Read Full Kerwin-Style Investigation Article →</div>
         </div>
       `).join("");
     }}
@@ -722,15 +731,16 @@ def build_dashboard_html():
       const l = dataReceipts[idx] || dataReceipts[0];
       document.getElementById("modalTitle").innerText = l.title;
       
-      const storyHtml = l.kerwin_story ? l.kerwin_story.replace(/# /g, '<h1>').replace(/## /g, '<h3 style="color:var(--accent); margin-top:1.25rem;">').replace(/### /g, '<h4>').replace(/\\n/g, '<br>') : l.observation;
+      const storyHtml = l.rendered_html || l.observation;
       
       document.getElementById("modalBody").innerHTML = `
-        <div style="line-height: 1.7; font-size: 0.95rem;">
+        <div class="article-rendered-body">
           ${{storyHtml}}
         </div>
-        <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+        <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--border); padding-top: 1rem; flex-wrap: wrap;">
           <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn">📄 Download PDF Brief Report</a>
-          <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary">🌐 Download HTML Brief</a>
+          <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary">🌐 Download Standalone HTML</a>
+          <button class="btn btn-secondary" onclick="copyCitation('${{l.title.replace(/'/g, "\\'")}}', 'GAA-2025.xlsx', 'FY2026-GAA-Byobject.xlsx')">📋 Copy Citation</button>
         </div>
       `;
       
@@ -766,6 +776,11 @@ def build_dashboard_html():
     /* Token-based Smart Fuzzy Filter */
     function smartFuzzyFilter() {{
       const query = document.getElementById("searchInput").value.toLowerCase().trim();
+      if (!query) {{
+        // Reset display
+        document.querySelectorAll("tbody tr, .clickable-card").forEach(el => {{ el.style.display = ""; }});
+        return;
+      }}
       const tokens = query.split(/\\s+/).filter(t => t.length > 0);
       
       document.querySelectorAll("tbody tr, .clickable-card").forEach(el => {{
