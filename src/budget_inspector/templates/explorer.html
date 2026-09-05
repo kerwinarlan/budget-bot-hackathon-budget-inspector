@@ -4,18 +4,28 @@
 
 {% block content %}
 
-<h1 style="font-size: 1.8rem; margin-bottom: 0.5rem;">📊 Budget Explorer</h1>
-<p style="color: var(--muted); margin-bottom: 1.5rem;">Browse and filter line items across 2025 and 2026. Click "Investigate" on any entry to launch a multi-check inspection and generate a Case File.</p>
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1 style="font-size: 1.8rem; margin-bottom: 0.25rem;">📊 Budget Explorer</h1>
+    <p style="color: var(--muted); font-size: 0.9rem;">Browse and filter line items across 2025 and 2026. Click "Investigate" on any entry to launch a multi-check inspection.</p>
+  </div>
+  
+  <div style="display: flex; gap: 0.5rem;">
+    <button class="btn btn-secondary btn-sm" onclick="exportTableToCSV('explorer_data.csv')">📥 Export Table to CSV</button>
+  </div>
+</div>
 
-<div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+<div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
   <a href="/explorer?tab=increases" class="btn {% if tab != 'increases' %}btn-secondary{% endif %}">📈 Top Increases</a>
   <a href="/explorer?tab=new" class="btn {% if tab != 'new' %}btn-secondary{% endif %}">🆕 New Items (2026)</a>
   <a href="/explorer?tab=flood" class="btn {% if tab != 'flood' %}btn-secondary{% endif %}">🌊 Flood Control</a>
   <a href="/explorer?tab=realloc" class="btn {% if tab != 'realloc' %}btn-secondary{% endif %}">🔄 Agency Reallocations</a>
 </div>
 
+<input type="text" id="searchInput" class="search-bar" placeholder="Filter Explorer records... Press '/' to focus" onkeyup="filterExplorerTable()" style="width: 100%; padding: 0.75rem 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--fg); font-size: 0.9rem; margin-bottom: 1.25rem;">
+
 <div class="card" style="padding: 0; overflow-x: auto;">
-  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+  <table id="explorerTable" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
     <thead>
       <tr style="background: rgba(0,0,0,0.3); color: var(--muted);">
         <th style="padding: 0.85rem 1rem;">Agency</th>
@@ -28,7 +38,7 @@
     </thead>
     <tbody>
       {% for r in records %}
-      <tr style="border-bottom: 1px solid var(--border);">
+      <tr style="border-bottom: 1px solid var(--border);" class="clickable-row">
         <td style="padding: 0.85rem 1rem;"><strong>{{ r.agency_name }}</strong></td>
         <td style="padding: 0.85rem 1rem;">{{ r.description }}</td>
         <td style="padding: 0.85rem 1rem;" class="num">
@@ -67,5 +77,34 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  function filterExplorerTable() {
+    const q = document.getElementById("searchInput").value.toLowerCase();
+    document.querySelectorAll("#explorerTable tbody tr").forEach(tr => {
+      const text = tr.innerText.toLowerCase();
+      tr.style.display = text.includes(q) ? "" : "none";
+    });
+  }
+
+  function exportTableToCSV(filename) {
+    const csv = [];
+    const rows = document.querySelectorAll("#explorerTable tr");
+    for (let i = 0; i < rows.length; i++) {
+      const row = [], cols = rows[i].querySelectorAll("td, th");
+      for (let j = 0; j < cols.length - 1; j++) {
+        row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+      }
+      csv.push(row.join(","));
+    }
+    const csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+    const downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+  }
+</script>
 
 {% endblock %}
