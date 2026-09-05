@@ -1,14 +1,15 @@
 {% extends "layout.html" %}
 
-{% block title %}Ask Inspector — Budget Inspector Desk{% endblock %}
+{% block title %}Ask Inspector — Budget Inspector{% endblock %}
 
 {% block content %}
 
-<h1 style="font-size: 1.8rem; margin-bottom: 1.5rem;">🔎 Ask Budget Inspector</h1>
+<h1 style="font-size: 1.8rem; margin-bottom: 0.5rem;">🔎 Ask Budget Inspector</h1>
+<p style="color: var(--muted); margin-bottom: 1.5rem;">Enter a natural language inquiry. If your question contains scope ambiguity, the Inspector will prompt you to clarify criteria.</p>
 
 <div class="card" style="margin-bottom: 2rem;">
   <form action="/ask" method="POST" style="display: flex; gap: 0.5rem;">
-    <input type="text" name="q" value="{{ question }}" class="search-input" placeholder="Type your budget inquiry..." style="flex: 1; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--fg);">
+    <input type="text" name="q" value="{{ question }}" class="search-input" placeholder="What do you want to investigate? Press '/' to focus..." style="flex: 1; padding: 0.85rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--fg); font-size: 1rem;">
     <button type="submit" class="btn">Ask Inspector</button>
   </form>
 </div>
@@ -23,70 +24,76 @@
     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
       {% for opt in ambiguity_options %}
         {% if opt.value == 'header' %}
-          <div style="font-weight: 600; color: var(--fg); font-size: 0.9rem;">{{ opt.label }}</div>
+          <div style="font-weight: 600; color: var(--fg); font-size: 0.9rem; margin-top: 0.5rem;">{{ opt.label }}</div>
         {% else %}
-          <label style="display: flex; align-items: center; gap: 0.5rem; background: var(--card-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); cursor: pointer;">
-            <input type="radio" name="choice" value="{{ opt.value }}" required>
-            <span>{{ opt.label }}</span>
+          <label style="display: flex; align-items: center; gap: 0.75rem; background: var(--card-bg); padding: 0.85rem 1rem; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.15s;">
+            <input type="radio" name="choice" value="{{ opt.value }}" required style="accent-color: var(--accent);">
+            <span style="font-size: 0.92rem;">{{ opt.label }}</span>
           </label>
         {% endif %}
       {% endfor %}
     </div>
-    <button type="submit" class="btn" style="margin-top: 1rem;">Confirm Inspection Scope</button>
+    <button type="submit" class="btn" style="margin-top: 1.25rem;">Confirm Inspection Scope</button>
   </form>
 </div>
 {% endif %}
 
 {% if results is not none %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-  <h2>Intent: <span style="color: var(--accent);">{{ intent }}</span></h2>
+  <div>
+    <span class="badge badge-high" style="margin-right: 0.5rem;">INTENT</span>
+    <strong style="font-size: 1.1rem; color: var(--fg);">{{ intent }}</strong>
+  </div>
   <span style="font-size: 0.85rem; color: var(--muted);">Returned {{ results | length }} Verified Line Items</span>
 </div>
 
 <div class="card" style="padding: 0; overflow-x: auto;">
-  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
     <thead>
       <tr style="background: rgba(0,0,0,0.3); color: var(--muted);">
-        <th style="padding: 0.75rem 1rem;">Agency</th>
-        <th style="padding: 0.75rem 1rem;">Description</th>
-        <th style="padding: 0.75rem 1rem; text-align: right;">2025 (PHP)</th>
-        <th style="padding: 0.75rem 1rem; text-align: right;">2026 (PHP)</th>
-        <th style="padding: 0.75rem 1rem; text-align: right;">Delta</th>
-        <th style="padding: 0.75rem 1rem;">Action</th>
+        <th style="padding: 0.85rem 1rem;">Agency</th>
+        <th style="padding: 0.85rem 1rem;">Program Description</th>
+        <th style="padding: 0.85rem 1rem;" class="num">2025 (PHP)</th>
+        <th style="padding: 0.85rem 1rem;" class="num">2026 (PHP)</th>
+        <th style="padding: 0.85rem 1rem;" class="num">Delta (PHP)</th>
+        <th style="padding: 0.85rem 1rem;">Actions</th>
       </tr>
     </thead>
     <tbody>
       {% for r in results %}
       <tr style="border-bottom: 1px solid var(--border);">
-        <td style="padding: 0.75rem 1rem;"><strong>{{ r.agency_name }}</strong></td>
-        <td style="padding: 0.75rem 1rem;">{{ r.description }}</td>
-        <td style="padding: 0.75rem 1rem; text-align: right; font-family: monospace;">
+        <td style="padding: 0.85rem 1rem;"><strong>{{ r.agency_name }}</strong></td>
+        <td style="padding: 0.85rem 1rem;">{{ r.description }}</td>
+        <td style="padding: 0.85rem 1rem;" class="num">
           {% if r.amount_2025_pesos is defined and r.amount_2025_pesos is not none %}
             ₱{{ (r.amount_2025_pesos / 1e6) | round(1) }}M
           {% else %}
             —
           {% endif %}
         </td>
-        <td style="padding: 0.75rem 1rem; text-align: right; font-family: monospace;">
+        <td style="padding: 0.85rem 1rem;" class="num">
           {% if r.amount_2026_pesos is defined and r.amount_2026_pesos is not none %}
             ₱{{ (r.amount_2026_pesos / 1e6) | round(1) }}M
           {% else %}
             —
           {% endif %}
         </td>
-        <td style="padding: 0.75rem 1rem; text-align: right; font-family: monospace; color: var(--success);">
+        <td style="padding: 0.85rem 1rem; color: var(--success);" class="num">
           {% if r.absolute_change_pesos is defined and r.absolute_change_pesos is not none %}
             +₱{{ (r.absolute_change_pesos / 1e6) | round(1) }}M
           {% else %}
             NEW
           {% endif %}
         </td>
-        <td style="padding: 0.75rem 1rem;">
-          <form action="/investigate" method="POST">
-            <input type="hidden" name="agency" value="{{ r.agency_name }}">
-            <input type="hidden" name="description" value="{{ r.description }}">
-            <button type="submit" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Investigate</button>
-          </form>
+        <td style="padding: 0.85rem 1rem;">
+          <div style="display: flex; gap: 0.35rem;">
+            <form action="/investigate" method="POST" style="display: inline;">
+              <input type="hidden" name="agency" value="{{ r.agency_name }}">
+              <input type="hidden" name="description" value="{{ r.description }}">
+              <button type="submit" class="btn btn-secondary btn-sm">🕵️ Investigate</button>
+            </form>
+            <button class="btn btn-secondary btn-sm" onclick="openProvenanceDrawer('{{ r.agency_name }}', '{{ r.description }}')">🧾 Cell Info</button>
+          </div>
         </td>
       </tr>
       {% endfor %}

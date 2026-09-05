@@ -6,23 +6,36 @@
   <title>{% block title %}Budget Inspector Desk{% endblock %} — Philippine Budget Bot</title>
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #151d2a;
-      --fg: #f1f5f9;
+      --bg: #090d16;
+      --card-bg: #131b2a;
+      --card-hover: #182338;
+      --fg: #f8fafc;
       --muted: #94a3b8;
       --accent: #3b82f6;
-      --border: #233144;
+      --accent-hover: #2563eb;
+      --border: #202d42;
+      --border-subtle: #172336;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --info: #06b6d4;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--bg); color: var(--fg); line-height: 1.6; padding: 0; }
+    
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
     
     .navbar {
-      background: #070a12;
+      background: #060911;
       border-bottom: 1px solid var(--border);
       padding: 0.85rem 2rem;
       display: flex;
@@ -31,6 +44,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      backdrop-filter: blur(8px);
     }
     
     .nav-brand {
@@ -45,17 +59,18 @@
       background: var(--accent);
       color: #fff;
       font-weight: 800;
-      padding: 0.4rem 0.6rem;
+      padding: 0.35rem 0.65rem;
       border-radius: 6px;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      letter-spacing: -0.03em;
     }
     
-    .nav-title { font-weight: 700; font-size: 1.1rem; }
+    .nav-title { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em; }
     .nav-subtitle { font-size: 0.75rem; color: var(--muted); }
     
     .nav-links {
       display: flex;
-      gap: 1.25rem;
+      gap: 1rem;
       list-style: none;
     }
     
@@ -63,63 +78,169 @@
       color: var(--muted);
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.4rem 0.6rem;
+      font-size: 0.88rem;
+      padding: 0.4rem 0.75rem;
       border-radius: 6px;
-      transition: all 0.2s;
+      transition: all 0.15s ease;
     }
     
     .nav-links a:hover, .nav-links a.active {
       color: #fff;
       background: var(--card-bg);
+      border: 1px solid var(--border);
     }
     
     .container {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 2rem auto;
       padding: 0 1.5rem;
     }
     
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      font-family: monospace;
-      text-transform: uppercase;
+    /* Typography & Tabular Numerics */
+    h1, h2, h3, h4 { letter-spacing: -0.02em; }
+    .num, .tabular {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
     }
-    .badge-verified { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
-    .badge-lead { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
-    .badge-high { background: rgba(59, 130, 246, 0.15); color: var(--accent); border: 1px solid var(--accent); }
     
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-verified { background: rgba(16, 185, 129, 0.12); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-lead { background: rgba(245, 158, 11, 0.12); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-high { background: rgba(59, 130, 246, 0.12); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); }
+    .badge-info { background: rgba(6, 182, 212, 0.12); color: var(--info); border: 1px solid rgba(6, 182, 212, 0.3); }
+    
+    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
       background: var(--accent);
       color: #fff;
-      border: none;
+      border: 1px solid transparent;
       padding: 0.5rem 1rem;
       border-radius: 6px;
       font-weight: 600;
       font-size: 0.85rem;
       cursor: pointer;
       text-decoration: none;
-      transition: background 0.2s;
+      transition: all 0.15s ease;
     }
-    .btn:hover { background: #2563eb; }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:active { transform: translateY(1px); }
     
     .btn-secondary {
-      background: transparent;
+      background: var(--card-bg);
       border: 1px solid var(--border);
       color: var(--fg);
     }
-    .btn-secondary:hover { background: var(--card-bg); }
+    .btn-secondary:hover { background: var(--card-hover); border-color: var(--accent); }
+    
+    .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.78rem; }
+    
+    kbd {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      font-size: 0.75rem;
+      font-family: var(--mono);
+      color: var(--muted);
+    }
+    
+    /* Toast & Drawer */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 1000;
+      animation: slideUp 0.2s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    /* Slide-over Drawer */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 520px;
+      background: #0f172a;
+      border-left: 1px solid var(--border);
+      z-index: 501;
+      padding: 2rem;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+    .drawer.active {
+      transform: translateX(0);
+    }
+    
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .drawer-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .drawer-close:hover { color: var(--fg); }
     
     footer {
       border-top: 1px solid var(--border);
-      padding: 2rem 0;
+      padding: 2.5rem 0;
       margin-top: 4rem;
       text-align: center;
       color: var(--muted);
@@ -151,10 +272,70 @@
     {% block content %}{% endblock %}
   </div>
 
+  <!-- Toast Notification -->
+  <div id="toast">✓ Copied to clipboard!</div>
+
+  <!-- Slide-over Drawer for Provenance -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h3 style="font-size: 1.2rem;" id="drawerTitle">Cell Provenance Inspector</h3>
+      <button class="drawer-close" onclick="closeDrawer()">&times;</button>
+    </div>
+    <div id="drawerBody">Loading cell provenance details...</div>
+  </div>
+
   <footer>
     <p><strong>Budget Inspector</strong> &copy; 2026 Team Vibe Coders. Built for the Philippine Budget Bot AI Hackathon.</p>
     <p style="margin-top:0.4rem; font-size:0.8rem;">Skill Fork: <code>kerwinarlan/budget-bot-skill</code> (forked from <code>tordecilla/budget-bot-skill</code>)</p>
   </footer>
+
+  <script>
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById("toast");
+        toast.style.display = "block";
+        setTimeout(() => { toast.style.display = "none"; }, 2000);
+      });
+    }
+
+    function openProvenanceDrawer(agency, description) {
+      document.getElementById("drawerTitle").innerText = "Cell Provenance Inspector";
+      document.getElementById("drawerBody").innerHTML = `
+        <div style="margin-bottom: 1rem;">
+          <strong style="color: var(--accent);">${agency}</strong>
+          <p style="font-size: 0.9rem; color: var(--muted); margin-top: 0.2rem;">${description}</p>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+          <span class="badge badge-verified">EXACT CELL CITATION</span>
+          <div style="font-family: var(--mono); font-size: 0.85rem; margin-top: 0.75rem;">
+            <div><strong>2025 GAA Workbook</strong>: <code>GAA-2025.xlsx</code></div>
+            <div><strong>Sheet Name</strong>: <code>Sheet 1</code></div>
+            <div><strong>Scale</strong>: Recorded in Thousand Pesos (Converted x1,000)</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <a href="/evidence?agency=${encodeURIComponent(agency)}&description=${encodeURIComponent(description)}" class="btn btn-sm">Full Evidence Grid →</a>
+        </div>
+      `;
+      document.getElementById("drawerOverlay").classList.add("active");
+      document.getElementById("drawer").classList.add("active");
+    }
+
+    function closeDrawer() {
+      document.getElementById("drawerOverlay").classList.remove("active");
+      document.getElementById("drawer").classList.remove("active");
+    }
+
+    // Press '/' key to focus query input
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+        e.preventDefault();
+        const input = document.querySelector(".search-input");
+        if (input) input.focus();
+      }
+    });
+  </script>
 
 </body>
 </html>

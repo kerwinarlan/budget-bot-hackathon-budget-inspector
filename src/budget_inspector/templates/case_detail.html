@@ -4,8 +4,12 @@
 
 {% block content %}
 
-<div style="margin-bottom: 1.5rem;">
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
   <a href="/cases" style="color: var(--muted); text-decoration: none; font-size: 0.9rem;">← Back to Case Files Index</a>
+  <div style="display: flex; gap: 0.5rem;">
+    <button class="btn btn-secondary btn-sm" onclick="copyText('CASE FILE {{ case.case_id }}: {{ case.title }}\nDepartment: {{ case.department_name }}\nAgency: {{ case.agency_name }}\n2025: ₱{{ case.amount_2025_pesos }}\n2026: ₱{{ case.amount_2026_pesos }}\nDelta: ₱{{ case.absolute_change_pesos }}\nFinding: {{ case.findings }}')">📋 Copy Case Summary</button>
+    <a href="/evidence?agency={{ case.agency_name }}&description={{ case.title }}" class="btn btn-sm">🧾 View Cell Evidence</a>
+  </div>
 </div>
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
@@ -18,8 +22,6 @@
     <h1 style="font-size: 1.8rem;">{{ case.title }}</h1>
     <p style="color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem;">{{ case.department_name }} → {{ case.agency_name }}</p>
   </div>
-  
-  <a href="/evidence?agency={{ case.agency_name }}&description={{ case.title }}" class="btn">🧾 View Evidence</a>
 </div>
 
 <div class="card" style="margin-bottom: 1.5rem;">
@@ -32,16 +34,16 @@
   <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 1rem;">2. Numerical Summary (Reconciled)</h3>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
     <div>
-      <span style="font-size: 0.8rem; color: var(--muted); uppercase">FY 2025 Allocation</span>
-      <div style="font-size: 1.25rem; font-weight: 700; font-family: monospace;">₱{{ (case.amount_2025_pesos / 1e9) | round(2) }}B</div>
+      <span style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase;">FY 2025 Allocation</span>
+      <div style="font-size: 1.3rem; font-weight: 700;" class="tabular">₱{{ (case.amount_2025_pesos / 1e9) | round(2) }}B</div>
     </div>
     <div>
-      <span style="font-size: 0.8rem; color: var(--muted); uppercase">FY 2026 Allocation</span>
-      <div style="font-size: 1.25rem; font-weight: 700; font-family: monospace;">₱{{ (case.amount_2026_pesos / 1e9) | round(2) }}B</div>
+      <span style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase;">FY 2026 Allocation</span>
+      <div style="font-size: 1.3rem; font-weight: 700;" class="tabular">₱{{ (case.amount_2026_pesos / 1e9) | round(2) }}B</div>
     </div>
     <div>
-      <span style="font-size: 0.8rem; color: var(--muted); uppercase">Absolute Change</span>
-      <div style="font-size: 1.25rem; font-weight: 700; font-family: monospace; color: var(--success);">
+      <span style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase;">Absolute Delta</span>
+      <div style="font-size: 1.3rem; font-weight: 700; color: var(--success);" class="tabular">
         +₱{{ (case.absolute_change_pesos / 1e9) | round(2) }}B
       </div>
     </div>
@@ -52,7 +54,7 @@
   <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 0.75rem;">3. Inspector's Notebook & Audit Checks</h3>
   <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
     {% for check in case.evidence_checks %}
-    <li style="background: rgba(0,0,0,0.2); padding: 0.6rem 0.85rem; border-radius: 6px; font-size: 0.9rem;">
+    <li style="background: rgba(0,0,0,0.2); padding: 0.65rem 0.85rem; border-radius: 6px; font-size: 0.9rem; border: 1px solid var(--border-subtle);">
       <strong style="color: var(--success);">✓ {{ check.check }}:</strong> {{ check.result }}
     </li>
     {% endfor %}
