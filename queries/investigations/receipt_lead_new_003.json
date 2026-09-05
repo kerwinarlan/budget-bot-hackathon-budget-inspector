@@ -1,0 +1,46 @@
+{
+  "lead_id": "LEAD-NEW-003",
+  "title": "Newly Created Line Item: Additional Appropriation in Compliance with the Supreme Cour...",
+  "category": "NEW_ITEM",
+  "confidence": "HIGH",
+  "observation": "A new appropriation line item titled 'Additional Appropriation in Compliance with the Supreme Court Decision' under Philippine Health Insurance Corporation appears in FY 2026 with \u20b160.00 Billion, having no exact match in FY 2025.",
+  "numerical_evidence": {
+    "department": "Budgetary Support to Government Corporations (BSGC)",
+    "agency": "Philippine Health Insurance Corporation",
+    "prexc_fpap_id": "310100100003000",
+    "expense_class": "Maintenance and Other Operating Expenses",
+    "amount_2025_pesos": 0.0,
+    "amount_2026_pesos": 60000000000.0,
+    "absolute_change_pesos": 60000000000.0,
+    "percent_change": "NEW_IN_2026"
+  },
+  "source_years": [
+    2026
+  ],
+  "query_used": "pap_comparison WHERE change_status = 'NEW_IN_2026' ORDER BY amount_2026_pesos DESC",
+  "provenance_2025": [],
+  "provenance_2026": [
+    {
+      "fiscal_year": 2026,
+      "department_name": "Budgetary Support to Government Corporations (BSGC)",
+      "agency_name": "Philippine Health Insurance Corporation",
+      "prexc_fpap_id": "310100100003000",
+      "raw_description": "Additional Appropriation in Compliance with the Supreme Court Decision",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5021404000",
+      "object_description": "Budgetary Support to Government-Owned or Controlled Corporations",
+      "amount_pesos": 60000000000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 721891
+    }
+  ],
+  "caveats": [
+    "The line item may be a genuinely new national program or a restructured/renamed legacy item.",
+    "Check for semantic equivalents under different wording in FY 2025."
+  ],
+  "next_steps": [
+    "Perform fuzzy search across 2025 agency line items for potential renames.",
+    "Review DBM Budget Priorities Framework for policy mandate changes."
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "lead_id": "LEAD-INC-002",
+  "title": "Substantial Budget Expansion: For the Payment of Interest of Foreign and Domestic Indebted...",
+  "category": "LARGE_INCREASE",
+  "confidence": "HIGH",
+  "observation": "Debt Interest Payments's program 'For the Payment of Interest of Foreign and Domestic Indebtedness' increased by \u20b1101.97 Billion (+12.0%), expanding from \u20b1848.03B in 2025 to \u20b1950.00B in 2026.",
+  "numerical_evidence": {
+    "department": "Automatic Appropriations",
+    "agency": "Debt Interest Payments",
+    "prexc_fpap_id": "401000000001000",
+    "expense_class": "Financial Expenses",
+    "amount_2025_pesos": 848030688000.0,
+    "amount_2026_pesos": 950000000000.0,
+    "absolute_change_pesos": 101969312000.0,
+    "percent_change": 12.02
+  },
+  "source_years": [
+    2025,
+    2026
+  ],
+  "query_used": "pap_comparison ORDER BY absolute_change_pesos DESC",
+  "provenance_2025": [
+    {
+      "fiscal_year": 2025,
+      "department_name": "Automatic Appropriations",
+      "agency_name": "Debt Interest Payments",
+      "prexc_fpap_id": "401000000001000",
+      "raw_description": "For the Payment of Interest of Foreign and Domestic Indebtedness",
+      "expense_class": "Financial Expenses",
+      "object_code": "5030102004",
+      "object_description": "Interest Expense - Others",
+      "amount_pesos": 848030688000.0,
+      "source_file": "GAA-2025.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 723078
+    }
+  ],
+  "provenance_2026": [
+    {
+      "fiscal_year": 2026,
+      "department_name": "Automatic Appropriations",
+      "agency_name": "Debt Interest Payments",
+      "prexc_fpap_id": "401000000001000",
+      "raw_description": "For the Payment of Interest of Foreign and Domestic Indebtedness",
+      "expense_class": "Financial Expenses",
+      "object_code": "5030102000",
+      "object_description": "Interest Expenses",
+      "amount_pesos": 950000000000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 736821
+    }
+  ],
+  "caveats": [
+    "An appropriation increase reflects legislative authorization, not actual obligation or disbursement.",
+    "Verify whether scope expansion or sub-item consolidation accounts for the growth."
+  ],
+  "next_steps": [
+    "Inspect agency budget justification documents for scope changes.",
+    "Cross-reference with DBM Special Allotment Release Orders (SARO) when available."
+  ]
+}
