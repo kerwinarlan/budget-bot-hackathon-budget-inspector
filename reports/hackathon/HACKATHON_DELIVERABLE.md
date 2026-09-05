@@ -1,10 +1,12 @@
 # Budget Inspector — Post-Hackathon Product Deliverable
 
-**Team Name**: Vibe Coders  
+**Team Name**: Vibe Coders PH  
 **Event**: Philippine Budget Bot AI Hackathon (June 27, 2026)  
-**Authors**: Kerwin Arlan & Team Vibe Coders  
+**Authors & Team Representatives**: Kerwin Arlan & Aljhone Agnas (Team Vibe Coders PH)  
 **Team Skill Fork**: [`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill) *(forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill) by Jaemark Tordecilla)*  
-**Primary Repository**: [`kerwinarlan/budget-bot-hackathon-budget-inspector`](https://github.com/kerwinarlan/budget-bot-hackathon-budget-inspector)  
+**Primary Repositories**:
+1. [`kerwinarlan/budget-bot-hackathon-budget-inspector`](https://github.com/kerwinarlan/budget-bot-hackathon-budget-inspector) (Cell Provenance & Brief Desk)
+2. [`Aljeu/ph-budget-investigator`](https://github.com/Aljeu/ph-budget-investigator) (7-Year Longitudinal Anomaly Terminal)
 
 ---
 
@@ -17,7 +19,7 @@ Budget Inspector does not merely output numbers—it guides users through an **A
 - **Ambiguity Engine**: Prompts users to refine scope when questions are ambiguous or framed with unverified assumptions.
 - **Autonomous Multi-Check Investigation**: Executes 7 audit checks (`OBSERVE -> QUESTION -> HYPOTHESIS -> QUERY -> VERIFY -> CHECK ALTERNATIVE EXPLANATIONS -> ASSESS -> FOLLOW-UP`).
 - **Case Files System**: Generates structured, reproducible Case Files (`cases/BI-2026-001.json` & `.md`).
-- **Inspector Briefs**: Compiles verified case files into newsroom evidence reports (*Budget Inspector Brief #001*).
+- **Inspector Briefs**: Compiles verified case files into newsroom evidence reports (*Budget Inspector Brief #001*) exported as Markdown, Standalone HTML, and print-ready PDF.
 
 ---
 
@@ -47,11 +49,12 @@ Budget Inspector does not merely output numbers—it guides users through an **A
 
 ---
 
-## 4. Editorial Deliverable: Budget Inspector Brief #001
+## 4. Editorial Deliverable: Budget Inspector Brief #001 (HTML & PDF)
 
 Verified cases were compiled into **Budget Inspector Brief #001**: *"What Changed Between the 2025 and 2026 Philippine GAA?"* saved at:
-- `reports/briefs/Budget_Inspector_Brief_001.md`
-- `reports/briefs/Budget_Inspector_Brief_001.html`
+- Markdown: `reports/briefs/Budget_Inspector_Brief_001.md`
+- Standalone HTML: `reports/briefs/Budget_Inspector_Brief_001.html`
+- Print-Ready PDF: `reports/briefs/Budget_Inspector_Brief_001.pdf`
 
 ---
 
