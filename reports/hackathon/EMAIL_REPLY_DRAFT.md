@@ -1,47 +1,64 @@
-Subject: Post-Hackathon Submission — Team Vibe Coders (Budget Inspector)
+Subject: Post-Hackathon Submission & Collaborative Deliverables — Team Vibe Coders PH
 
 Hi Jaemark and the Budget Bot Hackathon Team,
 
-Thank you for organizing the Philippine Budget Bot AI Hackathon! It was an incredible experience exploring how coding agents can help interrogate government budget spreadsheets.
+Thank you for hosting the Philippine Budget Bot AI Hackathon last June 27. It was an invaluable session exploring how AI coding agents can transform government budget inspection.
 
-On behalf of team **Vibe Coders**, here is our post-hackathon deliverable and summary:
-
----
-
-### 1. What We Built
-We extended our initial hackathon skill into **Budget Inspector**: an evidence-first, agentic analytical web application and newsroom desk for the Philippine budget.
-
-Unlike conversational chatbots that risk hallucinating numbers, Budget Inspector strictly separates reasoning from calculation:
-- **FastAPI / Python Web App**: Serves an interactive desk (`http://localhost:8000` / Render-ready).
-- **Ask → Investigate → Case File → Evidence → Brief Workflow**: Handles ambiguity resolution, autonomous multi-check investigations, cell-level row provenance, and case file creation.
-- **DuckDB Analytical Engine**: Reconciles normalized row sums directly against official DBM Grand Totals (100.0% exact match for FY 2026 GAA).
+On behalf of **Team Vibe Coders PH** (Kerwin Arlan & Aljhone Agnas), here is our post-hackathon deliverable and summary for your workshop documentation and international AI-in-media writeups.
 
 ---
 
-### 2. Our Favorite Discoveries & Case Files
-1. **DepEd Facilities Expansion (`BI-2026-001`)**: DepEd’s *Basic Education Facilities* line item surged by **+215.3% (+₱54.77 Billion)**, expanding from ₱25.44B in 2025 (`GAA-2025.xlsx`, Row 121894) to ₱80.21B in 2026 (`FY2026-GAA-Byobject.xlsx`, Row 124510).
-2. **PhilHealth SC Mandate Realignment (`BI-2026-002`)**: Isolated **₱113.13 Billion** in newly introduced PhilHealth subsidies in 2026, including ₱60B allocated in compliance with Supreme Court mandates regarding unutilized fund transfers.
-3. **DPWH Infrastructure Maintenance (`BI-2026-003`)**: Isolated a **+₱1.10 Billion (+157.1%)** expansion in flood mitigation infrastructure maintenance.
+### 1. Our Favorite Discoveries & Case Files
+
+When analyzing the enacted **FY 2025 GAA (R.A. 12116)** against the **FY 2026 GAA (R.A. 12314)**, our engine isolated three major findings:
+
+1. **DepEd School Infrastructure Surge (+215.3%)**:
+   DepEd's *Basic Education Facilities* line item expanded by **+₱54.77 Billion (+215.3%)**, growing from ₱25.44B in FY 2025 (`GAA-2025.xlsx`, Row 121894) to **₱80.21 Billion in FY 2026** (`FY2026-GAA-Byobject.xlsx`, Row 124510).
+2. **PhilHealth Supreme Court Mandate Subsidies**:
+   Isolated **₱113.13 Billion** in newly introduced PhilHealth subsidy line items in FY 2026, including **₱60.00 Billion** allocated in compliance with Supreme Court decisions regarding unutilized fund transfers (`FY2026-GAA-Byobject.xlsx`, Row 720102).
+3. **DPWH Flood Mitigation Facilities Maintenance (+157.1%)**:
+   Isolated a **+₱1.10 Billion (+157.1%)** expansion in flood control facilities maintenance under DPWH (`GAA-2025.xlsx`, Row 215410 vs `FY2026-GAA-Byobject.xlsx`, Row 218902).
 
 ---
 
-### 3. Editorial Deliverable: Budget Inspector Brief #001
-We compiled our verified case files into an editorial evidence report titled **Budget Inspector Brief #001** (*"What Changed Between the 2025 and 2026 Philippine GAA?"*), available at `reports/briefs/Budget_Inspector_Brief_001.md` and viewable in the web app under `/briefs/001`.
+### 2. Our Team's Complementary Repositories
+
+During and after the hackathon, our team built two complementary open-source repositories that form a 2-tier newsroom investigative suite:
+
+#### A. `kerwinarlan/budget-bot-hackathon-budget-inspector` (By Kerwin Arlan)
+- **Repository**: [`github.com/kerwinarlan/budget-bot-hackathon-budget-inspector`](https://github.com/kerwinarlan/budget-bot-hackathon-budget-inspector)
+- **Live Portal**: [`kerwinarlan.github.io/budget-bot-hackathon-budget-inspector`](https://kerwinarlan.github.io/budget-bot-hackathon-budget-inspector/)
+- **Core Focus**: High-precision DuckDB cross-year reconciliation engine (100.0% exact match against official DBM totals), natural language Ambiguity Clarification Engine, cell-level row provenance, automated Case File generator (`BI-2026-001`), and multi-format Brief Report exporter (Markdown, Standalone HTML, and Print-Ready PDF).
+
+#### B. `Aljeu/ph-budget-investigator` (By Aljhone Agnas)
+- **Repository**: [`github.com/Aljeu/ph-budget-investigator`](https://github.com/Aljeu/ph-budget-investigator)
+- **Live Portal**: [`aljeu.github.io/ph-budget-investigator/`](https://aljeu.github.io/ph-budget-investigator/)
+- **Core Focus**: Longitudinal 7-year trend analysis across two presidential administrations (FY 2020–2026), 8 pre-analyzed anomaly sectors (CIF, MAIP, FMR, Ayuda volatility), SQLite FTS5 full-text search, and multi-year sparkline visualizations.
+
+**How They Complement Each Other**:  
+Aljhone's engine provides the **macro 7-year historical trajectory** across administrations, while Kerwin's engine provides the **deep 2025↔2026 cell-level forensic breakdown**, exact DuckDB row reconciliation, and automated newsroom brief generation.
 
 ---
 
-### Repositories & Deliverables
-- **Main Analytical Repo**: [`kerwinarlan/budget-bot-hackathon-budget-inspector`](https://github.com/kerwinarlan/budget-bot-hackathon-budget-inspector)
-- **Team Skill Repo**: [`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill) *(forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill))*
+### 3. Our Agentic Workflow Architecture
 
-Key deliverable paths in the repository:
-- `reports/hackathon/HACKATHON_DELIVERABLE.md`
-- `reports/briefs/Budget_Inspector_Brief_001.md`
-- `DEPLOYMENT.md` & `render.yaml`
+Our agentic workflow operates on a strict separation of concerns:
+1. **Ambiguity Clarification**: The agent identifies query ambiguity and prompts reporters to confirm inspection criteria (e.g. distinguishing DPWH flood control vs. nationwide infrastructure).
+2. **Deterministic Calculations**: DuckDB and Python compute exact sums, deltas, and ratios against normalized Parquet tables derived from DBM spreadsheets—preventing LLM calculation errors.
+3. **Multi-Check Autonomous Investigation**: Executes 7 audit checks (`OBSERVE -> QUESTION -> HYPOTHESIS -> QUERY -> VERIFY -> CHECK ALTERNATIVE EXPLANATIONS -> ASSESS -> FOLLOW-UP`).
+4. **Machine-Readable Case Files & Brief Exporter**: Saves structured JSON/MD Case Files and generates print-ready PDF Brief Reports (`Budget_Inspector_Brief_001.pdf`).
 
-We look forward to future collaborations and staying connected with EJAP and the civic tech community!
+---
+
+### 📁 Attached Deliverables
+- **PDF Brief Report**: `reports/briefs/Budget_Inspector_Brief_001.pdf`
+- **Official Agency Audit Memorandum**: `reports/interrogative/Memorandum_bucor.pdf`
+- **Methodology & Documentation**: `README.md` and `HACKATHON_DELIVERABLE.md`
+
+We look forward to collaborating with EJAP, DBM, and the civic tech community to advance open-budget transparency in the Philippines.
 
 Best regards,
 
-**Kerwin Arlan & Team Vibe Coders**  
+**Kerwin Arlan & Aljhone Agnas**  
+Team Vibe Coders PH  
 kaarlan@up.edu.ph

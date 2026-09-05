@@ -16,10 +16,11 @@
 </div>
 
 <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-  <a href="/explorer?tab=increases" class="btn {% if tab != 'increases' %}btn-secondary{% endif %}">📈 Top Increases</a>
-  <a href="/explorer?tab=new" class="btn {% if tab != 'new' %}btn-secondary{% endif %}">🆕 New Items (2026)</a>
-  <a href="/explorer?tab=flood" class="btn {% if tab != 'flood' %}btn-secondary{% endif %}">🌊 Flood Control</a>
-  <a href="/explorer?tab=realloc" class="btn {% if tab != 'realloc' %}btn-secondary{% endif %}">🔄 Agency Reallocations</a>
+  <a href="/explorer?tab=increases" class="btn {% if tab == 'increases' or tab is not defined %}btn-accent{% else %}btn-secondary{% endif %}">📈 Increases (+)</a>
+  <a href="/explorer?tab=decreases" class="btn {% if tab == 'decreases' %}btn-accent{% else %}btn-secondary{% endif %}">📉 Decreases (-)</a>
+  <a href="/explorer?tab=new" class="btn {% if tab == 'new' %}btn-accent{% else %}btn-secondary{% endif %}">🆕 New Items (2026)</a>
+  <a href="/explorer?tab=flood" class="btn {% if tab == 'flood' %}btn-accent{% else %}btn-secondary{% endif %}">🌊 Flood Control</a>
+  <a href="/explorer?tab=realloc" class="btn {% if tab == 'realloc' %}btn-accent{% else %}btn-secondary{% endif %}">🔄 Agency Reallocations</a>
 </div>
 
 <input type="text" id="searchInput" class="search-bar" placeholder="Filter Explorer records... Press '/' to focus" onkeyup="filterExplorerTable()" style="width: 100%; padding: 0.75rem 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--fg); font-size: 0.9rem; margin-bottom: 1.25rem;">
@@ -55,9 +56,9 @@
             —
           {% endif %}
         </td>
-        <td style="padding: 0.85rem 1rem; color: var(--success);" class="num">
+        <td style="padding: 0.85rem 1rem; {% if r.absolute_change_pesos is defined and r.absolute_change_pesos < 0 %}color: var(--warning);{% else %}color: var(--success);{% endif %}" class="num">
           {% if r.absolute_change_pesos is defined and r.absolute_change_pesos is not none %}
-            +₱{{ (r.absolute_change_pesos / 1e6) | round(1) }}M
+            {% if r.absolute_change_pesos >= 0 %}+{% endif %}₱{{ (r.absolute_change_pesos / 1e6) | round(1) }}M
           {% else %}
             NEW
           {% endif %}

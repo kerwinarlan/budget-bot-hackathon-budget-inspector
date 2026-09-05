@@ -22,7 +22,7 @@ def execute_query(sql_query: str, params: Optional[List[Any]] = None) -> pd.Data
     finally:
         conn.close()
 
-def query_top_increases(limit: int = 15, min_2025_pesos: float = 10_000_000.0) -> pd.DataFrame:
+def query_top_increases(limit: int = 25, min_2025_pesos: float = 10_000_000.0) -> pd.DataFrame:
     sql = """
     SELECT 
         department_name,
@@ -36,8 +36,28 @@ def query_top_increases(limit: int = 15, min_2025_pesos: float = 10_000_000.0) -
         percent_change,
         change_status
     FROM pap_comparison
-    WHERE amount_2025_pesos >= ?
+    WHERE amount_2025_pesos >= ? AND absolute_change_pesos > 0
     ORDER BY absolute_change_pesos DESC
+    LIMIT ?
+    """
+    return execute_query(sql, [min_2025_pesos, limit])
+
+def query_top_decreases(limit: int = 25, min_2025_pesos: float = 10_000_000.0) -> pd.DataFrame:
+    sql = """
+    SELECT 
+        department_name,
+        agency_name,
+        prexc_fpap_id,
+        description,
+        expense_class,
+        amount_2025_pesos,
+        amount_2026_pesos,
+        absolute_change_pesos,
+        percent_change,
+        change_status
+    FROM pap_comparison
+    WHERE amount_2025_pesos >= ? AND absolute_change_pesos < 0
+    ORDER BY absolute_change_pesos ASC
     LIMIT ?
     """
     return execute_query(sql, [min_2025_pesos, limit])
@@ -61,7 +81,7 @@ def query_top_percent_increases(limit: int = 15, min_2025_pesos: float = 50_000_
     """
     return execute_query(sql, [min_2025_pesos, limit])
 
-def query_new_items(limit: int = 15, min_2026_pesos: float = 100_000_000.0) -> pd.DataFrame:
+def query_new_items(limit: int = 25, min_2026_pesos: float = 100_000_000.0) -> pd.DataFrame:
     sql = """
     SELECT 
         department_name,
@@ -78,7 +98,7 @@ def query_new_items(limit: int = 15, min_2026_pesos: float = 100_000_000.0) -> p
     """
     return execute_query(sql, [min_2026_pesos, limit])
 
-def query_disappeared_items(limit: int = 15, min_2025_pesos: float = 100_000_000.0) -> pd.DataFrame:
+def query_disappeared_items(limit: int = 25, min_2025_pesos: float = 100_000_000.0) -> pd.DataFrame:
     sql = """
     SELECT 
         department_name,
@@ -108,8 +128,12 @@ def query_flood_control(limit: int = 25) -> pd.DataFrame:
         percent_change,
         change_status
     FROM pap_comparison
-    WHERE LOWER(description) SIMILAR TO '%(flood|drainage|river control|dike|seawall|waterway|mitigation)%'
-    ORDER BY absolute_change_pesos DESC
+    WHERE LOWER(description) LIKE '%flood%' 
+       OR LOWER(description) LIKE '%drainage%' 
+       OR LOWER(description) LIKE '%seawall%' 
+       OR LOWER(description) LIKE '%river control%' 
+       OR LOWER(description) LIKE '%dike%'
+    ORDER BY amount_2026_pesos DESC
     LIMIT ?
     """
     return execute_query(sql, [limit])

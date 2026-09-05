@@ -11,6 +11,7 @@ import duckdb
 from budget_inspector.queries import (
     execute_query,
     query_top_increases,
+    query_top_decreases,
     query_new_items,
     query_flood_control,
     query_agency_reallocations,
@@ -35,7 +36,6 @@ os.makedirs(STATIC_DIR, exist_ok=True)
 
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-# Mount static directories
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 BRIEFS_DIR = "reports/briefs"
@@ -96,6 +96,9 @@ def ask_inspector(request: Request, q: Optional[str] = Form(None), choice: Optio
         elif choice == "large_inc" or "increase" in q_lower or "gained" in q_lower:
             df = query_top_increases(limit=15)
             intent = "Top Absolute Budget Increases"
+        elif "decreas" in q_lower or "cut" in q_lower or "reduced" in q_lower:
+            df = query_top_decreases(limit=15)
+            intent = "Top Absolute Budget Decreases / Reductions"
         else:
             df = search_budget(question if question else "flood control", limit=15)
             intent = f"Search Results for '{question}'"
@@ -156,7 +159,9 @@ def view_brief_001(request: Request):
 
 @app.get("/explorer", response_class=HTMLResponse)
 def budget_explorer(request: Request, tab: str = Query("increases")):
-    if tab == "new":
+    if tab == "decreases":
+        df = query_top_decreases(limit=25)
+    elif tab == "new":
         df = query_new_items(limit=25)
     elif tab == "flood":
         df = query_flood_control(limit=25)
