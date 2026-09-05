@@ -3,6 +3,7 @@
 **Team Name**: Vibe Coders  
 **Event**: Philippine Budget Bot AI Hackathon (June 27, 2026)  
 **Authors**: Kerwin Arlan & Team Vibe Coders  
+**Team Skill Fork**: [`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill) *(forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill) by Jaemark Tordecilla)*  
 **Target Audience**: Hackathon Organizers (EJAP / PLDT Smart), Media Researchers, Civic Tech Developers  
 
 ---
@@ -10,6 +11,8 @@
 ## 1. What We Built
 
 **Budget Inspector** is an evidence-first, agentic analytical toolkit for inspecting Philippine national budget data. It provides an automated, reproducible workflow that allows journalists, policy analysts, and citizens to interrogate the **FY 2025 General Appropriations Act (GAA, R.A. 12116)** and **FY 2026 General Appropriations Act (GAA, R.A. 12314)** spreadsheets published by the Department of Budget and Management (DBM).
+
+Our solution extends our team's hackathon skill ([`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill), forked from `tordecilla/budget-bot-skill`).
 
 Unlike general conversational LLMs that risk hallucinating financial figures, Budget Inspector separates reasoning from calculation:
 - **LLMs / Coding Agents**: Handle schema inspection, query planning, hypothesis generation, and journalistic explanation.

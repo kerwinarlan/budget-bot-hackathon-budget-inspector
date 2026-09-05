@@ -12,6 +12,9 @@
 
 It provides a reproducible, audit-trailed workflow that enables journalists, researchers, policy analysts, civic tech workers, and citizens to interrogate the **FY 2025 General Appropriations Act (GAA, R.A. 12116)** and **FY 2026 General Appropriations Act (GAA, R.A. 12314)** using natural language or structured CLI commands.
 
+This project extends and builds upon our team's hackathon skill repository:
+- **Skill Repository**: [`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill) *(forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill) by Jaemark Tordecilla)*.
+
 ---
 
 ## 🎯 Key Objectives
@@ -20,6 +23,23 @@ It provides a reproducible, audit-trailed workflow that enables journalists, res
 2. **Mandatory Provenance**: Every output number maps directly back to the exact source Excel file, sheet, row, and UACS code.
 3. **Journalistic Objectivity**: Strictly avoids sensationalism. Flags statistical anomalies, reallocations, and renames as investigative *leads*, not claims of wrongdoing.
 4. **Agentic Reproducibility**: Generates machine-readable **Research Receipts (JSON)** and SQL audit logs for every query and lead.
+
+---
+
+## 🛠️ Skill & Upstream Provenance
+
+During the hackathon, our team used **`kerwinarlan/budget-bot-skill`**, forked from Jaemark Tordecilla's official workshop skill (`tordecilla/budget-bot-skill`). 
+
+Installing the team skill in Claude Code or OpenAI Codex:
+```bash
+# Claude Code CLI
+claude plugin marketplace add kerwinarlan/budget-bot-skill
+claude plugin install budget-bot@budget-bot
+
+# OpenAI Codex CLI
+/plugin marketplace add kerwinarlan/budget-bot-skill
+/plugin add budget-bot@budget-bot
+```
 
 ---
 

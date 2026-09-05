@@ -10,7 +10,7 @@ In public-interest journalism and policy research, accuracy is paramount. When i
 
 To bridge this gap, **Team Vibe Coders** developed **Budget Inspector**: an open-source, evidence-first analytical toolkit built during and after the Philippine **Budget Bot AI Hackathon** (June 27, 2026).
 
-Budget Inspector enables journalists, researchers, and citizens to interrogate the **FY 2025 General Appropriations Act (GAA, R.A. 12116)** and **FY 2026 General Appropriations Act (GAA, R.A. 12314)** spreadsheets published by the Department of Budget and Management (DBM).
+Budget Inspector extends our team's hackathon skill repo ([`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill), forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill)). It enables journalists, researchers, and citizens to interrogate the **FY 2025 General Appropriations Act (GAA, R.A. 12116)** and **FY 2026 General Appropriations Act (GAA, R.A. 12314)** spreadsheets published by the Department of Budget and Management (DBM).
 
 ---
 

@@ -7,6 +7,8 @@ description: Use when answering Philippine national budget questions, comparing 
 
 This skill teaches coding agents how to interrogate Philippine General Appropriations Act (GAA) datasets (FY 2025 R.A. 12116 vs FY 2026 R.A. 12314) reproducibly and deterministically using DuckDB and Python.
 
+This skill is part of team Vibe Coders' hackathon toolkit ([`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill), forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill)).
+
 ---
 
 ## 🛠️ CORE WORKFLOW

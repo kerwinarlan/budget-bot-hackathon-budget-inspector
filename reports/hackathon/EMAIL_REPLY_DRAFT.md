@@ -20,25 +20,25 @@ We also isolated **₱113.13 Billion** in newly introduced PhilHealth subsidy li
 ---
 
 ### 2. Our Agentic Workflow
-Rather than relying on LLMs to calculate financial totals from prose (which leads to hallucinated numbers), we built **Budget Inspector** around a strict separation of concerns:
+Building upon our team skill repo ([`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill), forked from `tordecilla/budget-bot-skill`), we built **Budget Inspector** around a strict separation of concerns:
 1. **Agents handle orchestration**: The AI agent classifies user intent, inspects UACS schemas, and formulates deterministic DuckDB SQL queries.
 2. **DuckDB handles calculation**: DuckDB and Python compute exact sums, deltas, and ratios against normalized Parquet tables derived from DBM spreadsheets.
 3. **Audit Trail & Receipts**: For every query, the system generates a machine-readable **Research Receipt (.json)** containing the SQL query, cell/row provenance, and analytical caveats (e.g., reminding users that appropriations do not equal actual disbursements).
 
 ---
 
-### 3. International AI-in-Media Media Potential
+### 3. International AI-in-Media Potential
 We documented our methodology in a writeup titled **"Evidence-First Budget Reporting: Using Coding Agents as Reproducible Analytical Engines for Public Fiscal Data."** 
 
 It highlights how AI tools can be deployed in investigative newsrooms to replace fragile manual spreadsheet checks with audit-trailed, cell-verifiable SQL workflows while enforcing strict journalistic standards (e.g., flagging anomalies as *investigative leads* rather than unsupported accusations).
 
 ---
 
-### Repository & Deliverables
-Our full repository, documentation, test suite, and CLI tools are organized here:
-`budget-bot-hackathon-budget-inspector/`
+### Repositories & Deliverables
+- **Main Analytical Repo**: [`kerwinarlan/budget-bot-hackathon-budget-inspector`](https://github.com/kerwinarlan/budget-bot-hackathon-budget-inspector)
+- **Team Skill Repo**: [`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill) *(forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill))*
 
-Key report paths:
+Key report paths in main repo:
 - `reports/hackathon/HACKATHON_DELIVERABLE.md`
 - `reports/hackathon/DEMO_FINDINGS.md`
 - `reports/hackathon/PROJECT_SUMMARY.md`
