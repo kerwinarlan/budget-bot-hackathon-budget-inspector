@@ -1,10 +1,10 @@
 Subject: Post-Hackathon Deliverables & Collaborative Suite — Vibe Coders PH
 
-Hi Jaemark and the Budget Bot Hackathon Team,
+Hi Sir Jaemark and the Budget Bot Hackathon Team,
 
 Thank you for hosting the Philippine Budget Bot AI Hackathon last June 27. It was an extraordinary workshop exploring how AI coding agents can transform public fiscal data inspection.
 
-On behalf of Vibe Coders PH, Aljhone Agnas and I (Kerwin Arlan) are proud to submit our team's post-hackathon deliverables, findings, agentic workflows, and live web applications for your workshop documentation and international AI-in-media writeups.
+On behalf of Vibe Coders PH, Aljhone Agnas and I (Kerwin Arlan) are proud to submit our team's post-hackathon deliverables, findings, agentic workflows, and live web applications for your workshop documentation and international AI-in-media write-ups.
 
 ---
 
@@ -51,7 +51,7 @@ Our team's agentic workflow operates on a strict separation of concerns:
 
 ---
 
-We look forward to collaborating with EJAP, DBM, and the open-data community to advance public fiscal transparency. Please feel free to reach out to us at **kerwinarlan@gmail.com** and **agnasaljhone@gmail.com** if you'd like to discuss any of these findings or tool extensions.
+We look forward to collaborating with EJAP, DBM, and the open-data community to advance public fiscal transparency. 
 
 Best regards,
 
