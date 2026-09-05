@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block title %}Case {{ case.case_id }} — Budget Inspector{% endblock %}
+
+{% block content %}
+
+<div style="margin-bottom: 1.5rem;">
+  <a href="/cases" style="color: var(--muted); text-decoration: none; font-size: 0.9rem;">← Back to Case Files Index</a>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+  <div>
+    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+      <span class="badge badge-high">{{ case.case_id }}</span>
+      <span class="badge badge-lead">{{ case.status }}</span>
+      <span class="badge badge-verified">DATA CONFIDENCE: {{ case.data_confidence }}</span>
+    </div>
+    <h1 style="font-size: 1.8rem;">{{ case.title }}</h1>
+    <p style="color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem;">{{ case.department_name }} → {{ case.agency_name }}</p>
+  </div>
+  
+  <a href="/evidence?agency={{ case.agency_name }}&description={{ case.title }}" class="btn">🧾 View Evidence</a>
+</div>
+
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 0.5rem;">1. Initial Question & Observation</h3>
+  <p style="font-weight: 600; margin-bottom: 0.5rem;">Q: {{ case.initial_question }}</p>
+  <p style="color: var(--muted); font-size: 0.95rem;">{{ case.observation }}</p>
+</div>
+
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 1rem;">2. Numerical Summary (Reconciled)</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+    <div>
+      <span style="font-size: 0.8rem; color: var(--muted); uppercase">FY 2025 Allocation</span>
+      <div style="font-size: 1.25rem; font-weight: 700; font-family: monospace;">₱{{ (case.amount_2025_pesos / 1e9) | round(2) }}B</div>
+    </div>
+    <div>
+      <span style="font-size: 0.8rem; color: var(--muted); uppercase">FY 2026 Allocation</span>
+      <div style="font-size: 1.25rem; font-weight: 700; font-family: monospace;">₱{{ (case.amount_2026_pesos / 1e9) | round(2) }}B</div>
+    </div>
+    <div>
+      <span style="font-size: 0.8rem; color: var(--muted); uppercase">Absolute Change</span>
+      <div style="font-size: 1.25rem; font-weight: 700; font-family: monospace; color: var(--success);">
+        +₱{{ (case.absolute_change_pesos / 1e9) | round(2) }}B
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 0.75rem;">3. Inspector's Notebook & Audit Checks</h3>
+  <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+    {% for check in case.evidence_checks %}
+    <li style="background: rgba(0,0,0,0.2); padding: 0.6rem 0.85rem; border-radius: 6px; font-size: 0.9rem;">
+      <strong style="color: var(--success);">✓ {{ check.check }}:</strong> {{ check.result }}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 0.5rem;">4. Alternative Explanations Checked</h3>
+  <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--muted);">
+    {% for alt in case.alternative_explanations %}
+    <li>{{ alt }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h3 style="font-size: 1rem; color: var(--warning); margin-bottom: 0.5rem;">5. Analytical Caveats</h3>
+  <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--muted);">
+    {% for c in case.caveats %}
+    <li>⚠️ {{ c }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card">
+  <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 0.5rem;">6. Recommended Next Questions</h3>
+  <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--muted);">
+    {% for q in case.follow_up_questions %}
+    <li>🔍 {{ q }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock %}

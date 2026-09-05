@@ -1,6 +1,7 @@
 import json
 import os
 import typer
+import uvicorn
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -53,6 +54,12 @@ def status():
         console.print("\n[bold green]Ingested Source Manifests:[/bold green]")
         for src in m.get("sources", []):
             console.print(f"  • FY {src['fiscal_year']}: {src['filename']} ({src['file_size_bytes']/(1024*1024):.1f} MB) | SHA-256: {src['sha256'][:12]}...")
+
+@app.command("serve")
+def serve(host: str = typer.Option("127.0.0.1", help="Host address"), port: int = typer.Option(8000, help="Port number")):
+    """Launches the Budget Inspector Web Application server."""
+    console.print(f"[bold green]Starting Budget Inspector Desk on http://{host}:{port}[/bold green]")
+    uvicorn.run("budget_inspector.web:app", host=host, port=port, reload=True)
 
 @app.command("top-increases")
 def top_increases(limit: int = typer.Option(10, help="Number of items to return")):

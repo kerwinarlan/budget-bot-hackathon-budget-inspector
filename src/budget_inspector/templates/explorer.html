@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block title %}Budget Explorer — Budget Inspector Desk{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size: 1.8rem; margin-bottom: 0.5rem;">📊 Budget Explorer</h1>
+<p style="color: var(--muted); margin-bottom: 1.5rem;">Browse and filter line items across 2025 and 2026. Click "Investigate" on any entry to launch a multi-check inspection and generate a Case File.</p>
+
+<div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+  <a href="/explorer?tab=increases" class="btn {% if tab != 'increases' %}btn-secondary{% endif %}">📈 Top Increases</a>
+  <a href="/explorer?tab=new" class="btn {% if tab != 'new' %}btn-secondary{% endif %}">🆕 New Items (2026)</a>
+  <a href="/explorer?tab=flood" class="btn {% if tab != 'flood' %}btn-secondary{% endif %}">🌊 Flood Control</a>
+  <a href="/explorer?tab=realloc" class="btn {% if tab != 'realloc' %}btn-secondary{% endif %}">🔄 Agency Reallocations</a>
+</div>
+
+<div class="card" style="padding: 0; overflow-x: auto;">
+  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+    <thead>
+      <tr style="background: rgba(0,0,0,0.3); color: var(--muted);">
+        <th style="padding: 0.75rem 1rem;">Agency</th>
+        <th style="padding: 0.75rem 1rem;">Program Description</th>
+        <th style="padding: 0.75rem 1rem; text-align: right;">2025 (PHP)</th>
+        <th style="padding: 0.75rem 1rem; text-align: right;">2026 (PHP)</th>
+        <th style="padding: 0.75rem 1rem; text-align: right;">Delta (PHP)</th>
+        <th style="padding: 0.75rem 1rem;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr style="border-bottom: 1px solid var(--border);">
+        <td style="padding: 0.75rem 1rem;"><strong>{{ r.agency_name }}</strong></td>
+        <td style="padding: 0.75rem 1rem;">{{ r.description }}</td>
+        <td style="padding: 0.75rem 1rem; text-align: right; font-family: monospace;">
+          {% if r.amount_2025_pesos is defined and r.amount_2025_pesos is not none %}
+            ₱{{ (r.amount_2025_pesos / 1e6) | round(1) }}M
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td style="padding: 0.75rem 1rem; text-align: right; font-family: monospace;">
+          {% if r.amount_2026_pesos is defined and r.amount_2026_pesos is not none %}
+            ₱{{ (r.amount_2026_pesos / 1e6) | round(1) }}M
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td style="padding: 0.75rem 1rem; text-align: right; font-family: monospace; color: var(--success);">
+          {% if r.absolute_change_pesos is defined and r.absolute_change_pesos is not none %}
+            +₱{{ (r.absolute_change_pesos / 1e6) | round(1) }}M
+          {% else %}
+            NEW
+          {% endif %}
+        </td>
+        <td style="padding: 0.75rem 1rem;">
+          <form action="/investigate" method="POST">
+            <input type="hidden" name="agency" value="{{ r.agency_name }}">
+            <input type="hidden" name="description" value="{{ r.description }}">
+            <button type="submit" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">🕵️ Investigate This</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

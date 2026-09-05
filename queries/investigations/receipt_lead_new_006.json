@@ -1,0 +1,46 @@
+{
+  "lead_id": "LEAD-NEW-006",
+  "title": "Newly Created Line Item: Universal Access to Quality Tertiary Education...",
+  "category": "NEW_ITEM",
+  "confidence": "HIGH",
+  "observation": "A new appropriation line item titled 'Universal Access to Quality Tertiary Education' under Commission on Higher Education appears in FY 2026 with \u20b137.55 Billion, having no exact match in FY 2025.",
+  "numerical_evidence": {
+    "department": "Other Executive Offices (OEOs)",
+    "agency": "Commission on Higher Education",
+    "prexc_fpap_id": "310200100008000",
+    "expense_class": "Maintenance and Other Operating Expenses",
+    "amount_2025_pesos": 0.0,
+    "amount_2026_pesos": 37546564000.0,
+    "absolute_change_pesos": 37546564000.0,
+    "percent_change": "NEW_IN_2026"
+  },
+  "source_years": [
+    2026
+  ],
+  "query_used": "pap_comparison WHERE change_status = 'NEW_IN_2026' ORDER BY amount_2026_pesos DESC",
+  "provenance_2025": [],
+  "provenance_2026": [
+    {
+      "fiscal_year": 2026,
+      "department_name": "Other Executive Offices (OEOs)",
+      "agency_name": "Commission on Higher Education",
+      "prexc_fpap_id": "310200100008000",
+      "raw_description": "Universal Access to Quality Tertiary Education",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5029908000",
+      "object_description": "Donations",
+      "amount_pesos": 37546564000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 707335
+    }
+  ],
+  "caveats": [
+    "The line item may be a genuinely new national program or a restructured/renamed legacy item.",
+    "Check for semantic equivalents under different wording in FY 2025."
+  ],
+  "next_steps": [
+    "Perform fuzzy search across 2025 agency line items for potential renames.",
+    "Review DBM Budget Priorities Framework for policy mandate changes."
+  ]
+}

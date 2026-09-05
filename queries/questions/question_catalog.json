@@ -1,0 +1,36 @@
+{
+  "catalog_version": "1.0",
+  "questions": [
+    {
+      "id": "Q-Y2Y-001",
+      "category": "year_to_year",
+      "prompt": "Which programs increased the most from 2025 to 2026?",
+      "sql": "SELECT agency_name, description, amount_2025_pesos, amount_2026_pesos, absolute_change_pesos, percent_change FROM pap_comparison ORDER BY absolute_change_pesos DESC LIMIT 15;"
+    },
+    {
+      "id": "Q-NEW-001",
+      "category": "year_to_year",
+      "prompt": "Which line items are completely new in 2026?",
+      "sql": "SELECT agency_name, description, expense_class, amount_2026_pesos FROM pap_comparison WHERE change_status = 'NEW_IN_2026' ORDER BY amount_2026_pesos DESC LIMIT 15;"
+    },
+    {
+      "id": "Q-REALLOC-001",
+      "category": "internal_reallocation",
+      "prompt": "Where did money move even though agency totals stayed flat?",
+      "sql": "SELECT department_name, agency_name, amount_2025_pesos, amount_2026_pesos, absolute_change_pesos, percent_change FROM agency_comparison WHERE amount_2025_pesos > 1000000000.0 AND ABS(percent_change) <= 5.0 ORDER BY amount_2026_pesos DESC LIMIT 15;"
+    },
+    {
+      "id": "Q-FC-001",
+      "category": "infrastructure",
+      "prompt": "What happened to flood-control appropriations?",
+      "sql": "SELECT agency_name, description, amount_2025_pesos, amount_2026_pesos, absolute_change_pesos, percent_change FROM pap_comparison WHERE LOWER(description) SIMILAR TO '%(flood|drainage|river control|dike|seawall)%' ORDER BY absolute_change_pesos DESC LIMIT 20;"
+    },
+    {
+      "id": "Q-REN-001",
+      "category": "entity_text",
+      "prompt": "Which 2025 items disappeared while a highly similar 2026 item appeared?",
+      "type": "python_heuristic",
+      "handler": "find_fuzzy_rename_candidates"
+    }
+  ]
+}

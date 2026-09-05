@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{% block title %}Investigative Desk — Budget Inspector{% endblock %}
+
+{% block head %}
+<style>
+  .hero {
+    background: linear-gradient(180deg, #151d2a 0%, #0b0f19 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+  .hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.75rem; }
+  .hero p.tagline { font-size: 1.15rem; color: var(--accent); font-weight: 600; margin-bottom: 1.5rem; }
+  
+  .search-box-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .search-box {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .search-input {
+    flex: 1;
+    padding: 0.85rem 1.25rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--fg);
+    font-size: 1rem;
+  }
+  
+  .quick-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  .prompt-chip {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .prompt-chip:hover { color: var(--fg); border-color: var(--accent); }
+  
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  
+  .lead-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .lead-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+  .lead-obs { color: var(--muted); font-size: 0.88rem; margin-bottom: 1rem; }
+  
+  .case-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .case-row:last-child { border-bottom: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="hero">
+  <h1>Budget Inspector Desk</h1>
+  <p class="tagline">"I don't tell you what's corrupt. I show you what changed, why it stands out, and where to look next."</p>
+  
+  <div class="search-box-wrapper">
+    <form action="/ask" method="POST" class="search-box">
+      <input type="text" name="q" class="search-input" placeholder="Ask a budget question (e.g., What happened to flood control?)...">
+      <button type="submit" class="btn">🔎 Ask Inspector</button>
+    </form>
+    
+    <div class="quick-prompts">
+      <a href="/ask?q=What+changed+the+most+from+2025+to+2026%3F" class="prompt-chip">📈 Top 2025→2026 Changes</a>
+      <a href="/ask?q=What+happened+to+flood+control%3F" class="prompt-chip">🌊 Flood Control Shifts</a>
+      <a href="/ask?q=Which+programs+are+new+in+2026%3F" class="prompt-chip">🆕 New Line Items</a>
+      <a href="/ask?q=Where+did+money+move+even+though+totals+stayed+flat%3F" class="prompt-chip">🔄 Agency Reallocations</a>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">🕵️ Active Verified Leads</div>
+<div class="grid-2">
+  {% for lead in leads %}
+  <div class="card">
+    <div class="lead-card-header">
+      <span class="badge badge-lead">{{ lead.category }}</span>
+      <span class="badge badge-verified">VERIFIED PROVENANCE</span>
+    </div>
+    <div class="lead-title">{{ lead.title }}</div>
+    <div class="lead-obs">{{ lead.observation }}</div>
+    
+    <form action="/investigate" method="POST" style="margin-top: auto;">
+      <input type="hidden" name="agency" value="{{ lead.numerical_evidence.agency }}">
+      <input type="hidden" name="description" value="{{ lead.title.replace('Substantial Budget Expansion: ', '').replace('Newly Created Line Item: ', '').replace('Flood Mitigation Allocation Shift: ', '').replace('...', '') }}">
+      <button type="submit" class="btn btn-secondary" style="width: 100%;">🕵️ Investigate This</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="section-title">📁 Recent Case Files</div>
+<div class="card" style="padding: 0;">
+  {% for c in cases %}
+  <div class="case-row">
+    <div>
+      <span class="badge badge-high">{{ c.case_id }}</span>
+      <strong style="margin-left: 0.5rem;">{{ c.title }}</strong>
+      <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem;">{{ c.agency_name }} | Delta: ₱{{ (c.absolute_change_pesos / 1e9) | round(2) }} Billion</div>
+    </div>
+    <a href="/cases/{{ c.case_id }}" class="btn btn-secondary">View Case File</a>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

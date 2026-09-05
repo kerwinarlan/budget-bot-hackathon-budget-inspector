@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block title %}Cell & Row Provenance — Budget Inspector{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size: 1.8rem; margin-bottom: 0.5rem;">🧾 Evidence & Row Provenance Viewer</h1>
+<p style="color: var(--muted); margin-bottom: 2rem;">Inspect exact DBM source spreadsheet file names, sheet names, row indices, and raw UACS codes behind any finding.</p>
+
+<div class="card" style="margin-bottom: 2rem;">
+  <form action="/evidence" method="GET" style="display: flex; gap: 0.5rem;">
+    <input type="text" name="agency" value="{{ agency }}" placeholder="Agency Name (e.g. Office of the Secretary)..." style="flex: 1; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--fg);">
+    <input type="text" name="description" value="{{ description }}" placeholder="Program Description (e.g. Basic Education Facilities)..." style="flex: 2; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--fg);">
+    <button type="submit" class="btn">Search Provenance</button>
+  </form>
+</div>
+
+{% if agency and description %}
+<div class="card" style="margin-bottom: 2rem;">
+  <h2 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent);">FY 2025 Source Provenance Records</h2>
+  {% if p25 %}
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+      <thead>
+        <tr style="background: rgba(0,0,0,0.3); color: var(--muted);">
+          <th style="padding: 0.5rem;">Source File</th>
+          <th style="padding: 0.5rem;">Sheet</th>
+          <th style="padding: 0.5rem;">Excel Row</th>
+          <th style="padding: 0.5rem;">Object Code</th>
+          <th style="padding: 0.5rem; text-align: right;">Amount (Pesos)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in p25 %}
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 0.5rem;"><code>{{ row.source_file }}</code></td>
+          <td style="padding: 0.5rem;">{{ row.source_sheet }}</td>
+          <td style="padding: 0.5rem; font-weight: bold; color: var(--accent);">Row {{ row.source_row }}</td>
+          <td style="padding: 0.5rem;">{{ row.object_code }} ({{ row.object_description }})</td>
+          <td style="padding: 0.5rem; text-align: right; font-family: monospace;">₱{{ (row.amount_pesos / 1e6) | round(2) }}M</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p style="color: var(--muted);">No exact matching row in FY 2025 GAA workbook (NEW_IN_2026).</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--success);">FY 2026 Source Provenance Records</h2>
+  {% if p26 %}
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+      <thead>
+        <tr style="background: rgba(0,0,0,0.3); color: var(--muted);">
+          <th style="padding: 0.5rem;">Source File</th>
+          <th style="padding: 0.5rem;">Sheet</th>
+          <th style="padding: 0.5rem;">Excel Row</th>
+          <th style="padding: 0.5rem;">Object Code</th>
+          <th style="padding: 0.5rem; text-align: right;">Amount (Pesos)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in p26 %}
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 0.5rem;"><code>{{ row.source_file }}</code></td>
+          <td style="padding: 0.5rem;">{{ row.source_sheet }}</td>
+          <td style="padding: 0.5rem; font-weight: bold; color: var(--success);">Row {{ row.source_row }}</td>
+          <td style="padding: 0.5rem;">{{ row.object_code }} ({{ row.object_description }})</td>
+          <td style="padding: 0.5rem; text-align: right; font-family: monospace;">₱{{ (row.amount_pesos / 1e6) | round(2) }}M</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p style="color: var(--muted);">No exact matching row in FY 2026 GAA workbook (DISAPPEARED).</p>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

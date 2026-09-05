@@ -1,0 +1,118 @@
+{
+  "lead_id": "LEAD-INC-003",
+  "title": "Substantial Budget Expansion: Basic Education Facilities...",
+  "category": "LARGE_INCREASE",
+  "confidence": "HIGH",
+  "observation": "Office of the Secretary's program 'Basic Education Facilities' increased by \u20b154.77 Billion (+215.3%), expanding from \u20b125.44B in 2025 to \u20b180.21B in 2026.",
+  "numerical_evidence": {
+    "department": "Department of Education (DepEd)",
+    "agency": "Office of the Secretary",
+    "prexc_fpap_id": "310200100006000",
+    "expense_class": "Capital Outlays",
+    "amount_2025_pesos": 25440800000.0,
+    "amount_2026_pesos": 80206105000.0,
+    "absolute_change_pesos": 54765305000.0,
+    "percent_change": 215.27
+  },
+  "source_years": [
+    2025,
+    2026
+  ],
+  "query_used": "pap_comparison ORDER BY absolute_change_pesos DESC",
+  "provenance_2025": [
+    {
+      "fiscal_year": 2025,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5020322001",
+      "object_description": "Furniture and Fixtures",
+      "amount_pesos": 2615216000.0,
+      "source_file": "GAA-2025.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 67075
+    },
+    {
+      "fiscal_year": 2025,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Capital Outlays",
+      "object_code": "5060404002",
+      "object_description": "School Buildings",
+      "amount_pesos": 25440800000.0,
+      "source_file": "GAA-2025.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 67076
+    }
+  ],
+  "provenance_2026": [
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5020322000",
+      "object_description": "Semi-Expendable Furniture, Fixtures and Books Expenses",
+      "amount_pesos": 3690476000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 65657
+    },
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5020399000",
+      "object_description": "Other Supplies and Materials Expenses",
+      "amount_pesos": 500000000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 65658
+    },
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5029905000",
+      "object_description": "Rent/Lease Expenses",
+      "amount_pesos": 1000000000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 65659
+    },
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Capital Outlays",
+      "object_code": "5060404000",
+      "object_description": "Building and Other Structures Outlay",
+      "amount_pesos": 80206105000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 65660
+    }
+  ],
+  "caveats": [
+    "An appropriation increase reflects legislative authorization, not actual obligation or disbursement.",
+    "Verify whether scope expansion or sub-item consolidation accounts for the growth."
+  ],
+  "next_steps": [
+    "Inspect agency budget justification documents for scope changes.",
+    "Cross-reference with DBM Special Allotment Release Orders (SARO) when available."
+  ]
+}

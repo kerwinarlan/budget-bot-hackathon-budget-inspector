@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: budget-inspector
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: "pip install -e ."
+    startCommand: "uvicorn budget_inspector.web:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: "/health"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.15"
+      - key: DUCKDB_PATH
+        value: "data/budget.duckdb"

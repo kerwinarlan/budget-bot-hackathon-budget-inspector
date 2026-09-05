@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}Budget Inspector Brief #001{% endblock %}
+
+{% block content %}
+
+<div style="margin-bottom: 1.5rem;">
+  <a href="/briefs" style="color: var(--muted); text-decoration: none; font-size: 0.9rem;">← Back to Inspector Briefs Index</a>
+</div>
+
+<div class="card" style="line-height: 1.8; font-size: 0.95rem;">
+  {{ content | replace('# ', '<h1 style="font-size:1.8rem; margin-bottom:1rem; border-bottom:2px solid var(--accent); padding-bottom:0.5rem;">') | replace('## ', '<h2 style="font-size:1.3rem; margin-top:2rem; margin-bottom:0.75rem; color:var(--accent);">') | replace('### ', '<h3 style="font-size:1.1rem; margin-top:1.5rem; margin-bottom:0.5rem;">') | replace('\n', '<br>') | safe }}
+</div>
+
+{% endblock %}

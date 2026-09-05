@@ -1,4 +1,4 @@
-.PHONY: setup download ingest validate test demo status clean
+.PHONY: setup download ingest validate test serve demo status clean
 
 setup:
 	uv venv .venv --python 3.11
@@ -15,6 +15,9 @@ validate:
 
 test:
 	. .venv/bin/activate && pytest -v tests/
+
+serve:
+	. .venv/bin/activate && budget-inspector serve
 
 demo:
 	. .venv/bin/activate && python scripts/run_demo.py

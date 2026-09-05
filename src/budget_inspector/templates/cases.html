@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}Case Files Index — Budget Inspector Desk{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size: 1.8rem; margin-bottom: 0.5rem;">📁 Case Files Index</h1>
+<p style="color: var(--muted); margin-bottom: 2rem;">Every investigation produces a machine-readable Case File and Research Receipt containing exact DuckDB queries, calculations, cell provenance, and analytical caveats.</p>
+
+<div class="card" style="padding: 0;">
+  {% for c in cases %}
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border-bottom: 1px solid var(--border);">
+    <div>
+      <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem;">
+        <span class="badge badge-high">{{ c.case_id }}</span>
+        <span class="badge badge-lead">{{ c.status }}</span>
+        <span style="font-size: 0.8rem; color: var(--muted);">Interest: {{ c.investigative_interest }} | Confidence: {{ c.data_confidence }}</span>
+      </div>
+      <h3 style="font-size: 1.1rem; font-weight: 700;">{{ c.title }}</h3>
+      <p style="font-size: 0.88rem; color: var(--muted); margin-top: 0.25rem;">{{ c.agency_name }} | Delta: ₱{{ (c.absolute_change_pesos / 1e9) | round(2) }} Billion</p>
+    </div>
+    <a href="/cases/{{ c.case_id }}" class="btn btn-secondary">Inspect Case File</a>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

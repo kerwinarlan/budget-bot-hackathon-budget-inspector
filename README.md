@@ -1,163 +1,85 @@
-# Budget Inspector (Philippine Budget Bot Hackathon Output)
+# Budget Inspector
 
-> **Vibe Coders Team Deliverable**  
-> Post-Hackathon Output for the Philippine **Budget Bot AI Hackathon** (June 27, 2026).  
-> Built by Kerwin Arlan & Team Vibe Coders.
-
----
-
-## 📌 Overview
-
-**Budget Inspector** is an evidence-first agentic analytical toolkit for inspecting Philippine national budget data published by the Department of Budget and Management (DBM).
-
-It provides a reproducible, audit-trailed workflow that enables journalists, researchers, policy analysts, civic tech workers, and citizens to interrogate the **FY 2025 General Appropriations Act (GAA, R.A. 12116)** and **FY 2026 General Appropriations Act (GAA, R.A. 12314)** using natural language or structured CLI commands.
-
-This project extends and builds upon our team's hackathon skill repository:
-- **Skill Repository**: [`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill) *(forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill) by Jaemark Tordecilla)*.
+> **An evidence-first investigative agent for the Philippine national budget.**  
+> *"I don't tell you what's corrupt. I show you what changed, why it stands out, and where to look next."*
 
 ---
 
-## 🎯 Key Objectives
+## 📌 Product Identity & Overview
 
-1. **Deterministic Integrity**: AI agents guide query formulation and explanation, but **DuckDB and Python** execute all calculations, aggregations, and entity matching.
-2. **Mandatory Provenance**: Every output number maps directly back to the exact source Excel file, sheet, row, and UACS code.
-3. **Journalistic Objectivity**: Strictly avoids sensationalism. Flags statistical anomalies, reallocations, and renames as investigative *leads*, not claims of wrongdoing.
-4. **Agentic Reproducibility**: Generates machine-readable **Research Receipts (JSON)** and SQL audit logs for every query and lead.
+**Budget Inspector** is an evidence-first, agentic analytical toolkit and web application for inspecting Philippine national budget data published by the Department of Budget and Management (DBM).
 
----
-
-## 🛠️ Skill & Upstream Provenance
-
-During the hackathon, our team used **`kerwinarlan/budget-bot-skill`**, forked from Jaemark Tordecilla's official workshop skill (`tordecilla/budget-bot-skill`). 
-
-Installing the team skill in Claude Code or OpenAI Codex:
-```bash
-# Claude Code CLI
-claude plugin marketplace add kerwinarlan/budget-bot-skill
-claude plugin install budget-bot@budget-bot
-
-# OpenAI Codex CLI
-/plugin marketplace add kerwinarlan/budget-bot-skill
-/plugin add budget-bot@budget-bot
-```
+Built during and after the Philippine **Budget Bot AI Hackathon** (June 27, 2026) by team **Vibe Coders** (Kerwin Arlan & team), this system extends our hackathon skill repository [`kerwinarlan/budget-bot-skill`](https://github.com/kerwinarlan/budget-bot-skill) *(forked from [`tordecilla/budget-bot-skill`](https://github.com/tordecilla/budget-bot-skill) by Jaemark Tordecilla)*.
 
 ---
 
-## 🏗️ Repository Architecture
+## 🔄 Agentic Product Flow
 
 ```text
-budget-bot-hackathon-budget-inspector/
-│
-├── AGENTS.md                   # Agent guidelines & evidence rules
-├── README.md                   # Project overview & quickstart
-├── pyproject.toml              # Build & dependency metadata
-├── Makefile                    # Target shortcuts (ingest, validate, report)
-├── .gitignore
-│
-├── raw/                        # Untouched DBM Excel files
-│   ├── 2025/GAA-2025.xlsx
-│   └── 2026/FY2026-GAA-Byobject.xlsx
-│
-├── reference/                  # Hackathon slides & presentation notes
-│   ├── workshop/
-│   └── slides/
-│
-├── data/
-│   ├── manifests/manifest.json # SHA-256 hashes & retrieval metadata
-│   ├── normalized/             # Cleaned Parquet tables
-│   └── budget.duckdb           # Embedded analytical SQL database
-│
-├── src/budget_inspector/
-│   ├── acquire.py              # Download & manifest generation
-│   ├── inspect_workbooks.py    # Sheet & schema discovery
-│   ├── schema.py               # Canonical Pydantic schema
-│   ├── normalize.py            # Data cleaning & currency conversion
-│   ├── entity_resolution.py    # Cross-year PAP & fuzzy matching
-│   ├── compare.py              # 2025 vs 2026 comparison engine
-│   ├── anomalies.py            # Heuristic lead generator
-│   ├── queries.py              # DuckDB query executor
-│   ├── provenance.py           # Cell/row provenance extractor
-│   ├── reporting.py            # Research receipt & report generator
-│   └── cli.py                  # Typer CLI application
-│
-├── skills/
-│   └── budget-inspector/
-│       └── SKILL.md            # Reusable skill for AI coding agents
-│
-├── agents/
-│   └── budget-inspector.md     # Agent context definition
-│
-├── queries/
-│   └── investigations/         # Saved SQL queries & research receipts
-│
-├── reports/
-│   ├── hackathon/              # Final hackathon deliverables & email draft
-│   └── validation/             # Reconciliations & inventory reports
-│
-├── tests/                      # Unit & integration tests (pytest)
-└── scripts/                    # Workflow execution scripts
-    ├── download_data.py
-    ├── ingest.py
-    ├── validate.py
-    └── run_demo.py
+Ask a Question
+      ↓
+Inspector Clarifies (Ambiguity Engine)
+      ↓
+Deterministic Analysis (DuckDB SQL)
+      ↓
+Evidence Verification (Source File & Row Provenance)
+      ↓
+Alternative Explanations Checked
+      ↓
+Case File Created (cases/BI-2026-xxx)
+      ↓
+Follow-Up Questions Generated
+      ↓
+Budget Inspector Brief Published
 ```
 
 ---
 
-## 🚀 Quickstart
+## 🎯 Key Capabilities
+
+1. **Ask Inspector (`/ask`)**: Natural language question routing paired with an **Ambiguity/Clarification Engine** that prompts users when queries involve metric, scope, or framing ambiguity.
+2. **Autonomous Multi-Check Investigation (`/investigate`)**: Runs a 7-step audit trail (`OBSERVE -> QUESTION -> HYPOTHESIS -> QUERY -> VERIFY -> CHECK ALTERNATIVE EXPLANATIONS -> ASSESS -> FOLLOW-UP`).
+3. **Case Files System (`/cases`)**: Stores machine-readable JSON (`cases/BI-2026-001.json`) and Markdown (`cases/BI-2026-001.md`) case files with **Investigative Interest** and **Data Confidence** scores.
+4. **Inspector Briefs (`/briefs`)**: Automatically compiles verified case files into newsroom evidence reports (e.g. *Budget Inspector Brief #001*).
+5. **Cell & Row Provenance (`/evidence`)**: Traces every number down to the exact DBM Excel workbook, sheet, and 1-indexed row number.
+6. **Journalistic Ethics Safeguards**: Rejects unsupported "suspicion/corruption" framing, offering objective investigative criteria instead.
+
+---
+
+## 🚀 Quickstart & Local Run
 
 ### 1. Environment Setup
 
 ```bash
 uv venv .venv --python 3.11
 source .venv/bin/activate
-uv pip install -e .
+uv pip install -e ".[dev]"
 ```
 
-### 2. One-Command Data Pipeline
+### 2. Ingest Data & Validate Reconciliations
 
 ```bash
-# Acquire official DBM spreadsheets, normalize, and build DuckDB engine
-python scripts/ingest.py
+# Ingest raw DBM spreadsheets and build local DuckDB database
+make ingest
 
-# Run reconciliation and data quality checks
-python scripts/validate.py
+# Verify 100% total reconciliation and provenance coverage
+make validate
 ```
 
-### 3. Run the CLI / Agent Tools
+### 3. Launch Web Application
 
 ```bash
-# View database status & row counts
-budget-inspector status
-
-# Discover top absolute increases from 2025 to 2026
-budget-inspector top-increases --limit 10
-
-# Search for flood control appropriations
-budget-inspector search "flood control"
-
-# Generate automated investigative leads
-budget-inspector leads
-
-# Ask natural language questions
-budget-inspector ask "Which agencies experienced the largest internal reallocations?"
+# Launch interactive Budget Inspector Desk
+budget-inspector serve
+# or
+make serve
 ```
+Open **`http://localhost:8000`** in your browser.
 
 ---
 
-## 📊 Key Findings Highlight
+## ☁️ Deployment Architecture
 
-1. **Exact Reconciliation**: Reconciled normalized row totals directly against official DBM Grand Totals:
-   - **FY 2025 GAA**: ₱6,326,324,300,000 (100.00% exact match)
-   - **FY 2026 GAA**: ₱6,793,162,000,000 (100.00% exact match)
-2. **Headline Growth**: Total budget increased by **₱466.84 Billion (+7.38%)**.
-3. **DPWH Flood Control**: Specialized flood control analysis isolated key regional and capital outlay shifts across DPWH engineering districts.
-
----
-
-## 📄 Hackathon Deliverables
-
-- `reports/hackathon/HACKATHON_DELIVERABLE.md`: Full event deliverable.
-- `reports/hackathon/DEMO_FINDINGS.md`: Key verified leads and evidence.
-- `reports/hackathon/EMAIL_REPLY_DRAFT.md`: Draft email response to hackathon organizers.
-- `reports/hackathon/PROJECT_SUMMARY.md`: Public-facing summary (300–500 words).
+- **Primary Web App Target (Render)**: FastAPI + Jinja2 + DuckDB database bundled in standard Python web service (`render.yaml`).
+- **Health Check**: `/health`
+- **GitHub Pages Fallback**: `reports/deployment/GITHUB_PAGES_DIAGNOSIS.md` explains deployment constraints for private GitHub repositories.

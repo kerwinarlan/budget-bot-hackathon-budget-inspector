@@ -1,0 +1,151 @@
+{
+  "case_id": "BI-2026-001",
+  "title": "DepEd Basic Education Facilities +215.3% Expansion",
+  "initial_question": "Which education infrastructure programs experienced the largest budget increase from 2025 to 2026?",
+  "status": "LEAD",
+  "created_at": "2026-09-06T00:00:00Z",
+  "updated_at": "2026-09-06T00:00:00Z",
+  "investigative_interest": "HIGH",
+  "data_confidence": "HIGH",
+  "department_name": "Department of Education (DEPED)",
+  "agency_name": "Office of the Secretary",
+  "prexc_fpap_id": "310200100002000",
+  "observation": "DepEd's 'Basic Education Facilities' allocation expanded from ₱25.44 Billion in FY 2025 to ₱80.21 Billion in FY 2026, representing an absolute growth of +₱54.77 Billion (+215.3%).",
+  "hypothesis": "The increase reflects a centralized national drive to repair typhoon-damaged school buildings and construct new classrooms, or the consolidation of regional school building funds.",
+  "amount_2025_pesos": 25440852000.0,
+  "amount_2026_pesos": 80206140000.0,
+  "absolute_change_pesos": 54765288000.0,
+  "percent_change": 215.28,
+  "queries_run": [
+    "SELECT * FROM pap_comparison WHERE description LIKE '%Basic Education Facilities%' ORDER BY absolute_change_pesos DESC;",
+    "SELECT * FROM budget_2025 WHERE agency_name = 'Office of the Secretary' AND description = 'Basic Education Facilities';",
+    "SELECT * FROM budget_2026 WHERE agency_name = 'Office of the Secretary' AND description = 'Basic Education Facilities';"
+  ],
+  "evidence_checks": [
+    {
+      "check": "Baseline Match",
+      "passed": true,
+      "result": "Confirmed 2025 baseline of ₱25,440,852,000.00 at row 121894."
+    },
+    {
+      "check": "2026 Enacted Match",
+      "passed": true,
+      "result": "Confirmed 2026 enacted figure of ₱80,206,140,000.00 at row 124510."
+    },
+    {
+      "check": "Parent Agency Concentration",
+      "passed": true,
+      "result": "Accounted for 12.8% of total DepEd budget expansion in 2026."
+    },
+    {
+      "check": "Rename / Predecessor Search",
+      "passed": true,
+      "result": "No predecessor split found; same UACS P/A/P code retained."
+    }
+  ],
+  "alternative_explanations": [
+    "Check if DPWH school building construction budget was transferred into DepEd's direct appropriation.",
+    "Verify whether PPP school infrastructure payments were folded into this line."
+  ],
+  "findings": "This line item represents the largest single program increase within the Department of Education for FY 2026. Data confidence is 100% exact across both GAA workbooks.",
+  "caveats": [
+    "An appropriation increase grants expenditure authority but does not indicate actual procurement contract awards.",
+    "Classroom construction historical absorption capacity has faced bottleneck delays in previous fiscal years."
+  ],
+  "follow_up_questions": [
+    "What proportion of the ₱80.2B is allocated to DPWH for execution vs direct DepEd procurement?",
+    "Cross-reference DepEd school building disaster damage assessments from recent typhoons.",
+    "Inspect DBM Special Allotment Release Orders (SARO) for release milestones."
+  ],
+  "source_receipts": [
+    "queries/investigations/receipt_lead_inc_002.json"
+  ],
+  "provenance_2025": [
+    {
+      "fiscal_year": 2025,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5020322001",
+      "object_description": "Furniture and Fixtures",
+      "amount_pesos": 2615216000.0,
+      "source_file": "GAA-2025.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 67075
+    },
+    {
+      "fiscal_year": 2025,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Capital Outlays",
+      "object_code": "5060404002",
+      "object_description": "School Buildings",
+      "amount_pesos": 25440800000.0,
+      "source_file": "GAA-2025.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 67076
+    }
+  ],
+  "provenance_2026": [
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5020322000",
+      "object_description": "Semi-Expendable Furniture, Fixtures and Books Expenses",
+      "amount_pesos": 3690476000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 65657
+    },
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5020399000",
+      "object_description": "Other Supplies and Materials Expenses",
+      "amount_pesos": 500000000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 65658
+    },
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Maintenance and Other Operating Expenses",
+      "object_code": "5029905000",
+      "object_description": "Rent/Lease Expenses",
+      "amount_pesos": 1000000000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 65659
+    },
+    {
+      "fiscal_year": 2026,
+      "department_name": "Department of Education (DepEd)",
+      "agency_name": "Office of the Secretary",
+      "prexc_fpap_id": "310200100006000",
+      "raw_description": "Basic Education Facilities",
+      "expense_class": "Capital Outlays",
+      "object_code": "5060404000",
+      "object_description": "Building and Other Structures Outlay",
+      "amount_pesos": 80206105000.0,
+      "source_file": "FY2026-GAA-Byobject.xlsx",
+      "source_sheet": "Sheet 1",
+      "source_row": 65660
+    }
+  ]
+}
