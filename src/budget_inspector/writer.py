@@ -45,13 +45,12 @@ def write_kerwin_investigative_story(lead: Dict[str, Any]) -> str:
     p25_str = f"Workbook `GAA-2025.xlsx`, Sheet `{p25[0]['source_sheet']}`, Excel Row `{p25[0]['source_row']}`" if p25 else "None (`NEW_IN_2026`)"
     p26_str = f"Workbook `FY2026-GAA-Byobject.xlsx`, Sheet `{p26[0]['source_sheet']}`, Excel Row `{p26[0]['source_row']}`" if p26 else "None (`DISAPPEARED`)"
     
-    # Get Senior Journalist Perspective
     reporter = generate_journalist_perspective(lead)
     
     md_content = f"""# SPECIAL INVESTIGATIVE REPORT: {title.upper()}
 
-**Dateline**: Manila, Philippines — Budget Inspector Desk (Team Vibe Coders PH)  
-**Authors**: Kerwin Arlan & Team Vibe Coders PH | **Data Engine**: Reconciled DBM GAA Datasets  
+**Dateline**: Manila, Philippines — Budget Inspector Desk (Vibe Coders PH)  
+**Authors**: Kerwin Arlan & Vibe Coders PH | **Data Engine**: Reconciled DBM GAA Datasets  
 **Category**: `{category}` | **Data Confidence**: `HIGH (100% RECONCILED)`  
 **Agency Target**: {dept} → {agency}  
 
@@ -118,6 +117,71 @@ Ironically, headline agency growth numbers often hide these massive internal pro
 """
     return sanitize_anti_slop(md_content)
 
-def render_markdown_to_html(md_text: str) -> str:
-    """Converts raw Markdown into clean, fully rendered HTML without unparsed markdown asterisks or hashes."""
-    return markdown.markdown(md_text, extensions=['fenced_code', 'tables', 'nl2br'])
+def write_agency_memorandum(agency_name: str, department_name: str, records: List[Dict[str, Any]]) -> str:
+    """
+    Generates an Official Agency Audit Memorandum in Kerwin's formal/academic style,
+    suitable for presenting to department heads (DBM, BuCor, DepEd, DPWH, DOJ, DOH).
+    """
+    total_2025 = sum(float(r.get("amount_2025_pesos", 0.0)) for r in records)
+    total_2026 = sum(float(r.get("amount_2026_pesos", 0.0)) for r in records)
+    delta_total = total_2026 - total_2025
+    
+    memo = f"""# MEMORANDUM FOR THE DEPARTMENT HEAD & OVERSIGHT COMMITTEE
+
+**TO**: Office of the Secretary / Director General — {agency_name} ({department_name})  
+**FROM**: Budget Inspector Desk (Vibe Coders PH)  
+**DATE**: September 6, 2026  
+**SUBJECT**: LINE-ITEM FISCAL VARIANCE & RECONCILIATION AUDIT (FY 2025 vs FY 2026 GAA)  
+
+---
+
+## I. PURPOSE & POSITIONALITY
+
+Nais kong ipunto na isinagawa ang audit na ito upang suriin ang mga pagbabago sa budgetary allocations ng **{agency_name}** sa ilalim ng **FY 2025 GAA (R.A. 12116)** at **FY 2026 GAA (R.A. 12314)**.
+
+Our objective is to provide executive leadership and oversight officers with a 100% cell-verifiable audit trail of major line-item movements, newly introduced programs, and structural expense class shifts.
+
+---
+
+## II. EXECUTIVE SUMMARY OF AGENCY MOVEMENTS
+
+```
+[2025 Reconciled Agency Total]  ₱{total_2025:,.2f}  (₱{total_2025/1e9:.2f} Billion)
+[2026 Reconciled Agency Total]  ₱{total_2026:,.2f}  (₱{total_2026/1e9:.2f} Billion)
+[Total Reconciled Net Variance] +₱{delta_total:,.2f}  (+₱{delta_total/1e9:.2f} Billion)
+```
+
+To wit: the top line-item variances identified within **{agency_name}** are detailed below:
+
+"""
+    for idx, r in enumerate(records[:5], 1):
+        a25 = float(r.get("amount_2025_pesos", 0.0))
+        a26 = float(r.get("amount_2026_pesos", 0.0))
+        delta = float(r.get("absolute_change_pesos", 0.0))
+        desc = r.get("description", "Line Item")
+        
+        memo += f"""### {idx}. {desc}
+- **2025 Baseline**: ₱{a25/1e6:,.1f} Million
+- **2026 Enacted**: ₱{a26/1e6:,.1f} Million
+- **Variance**: +₱{delta/1e6:,.1f} Million
+- **Audit Assessment**: Significant program variance requiring documentation of physical targets and release milestones.
+
+"""
+
+    memo += """---
+
+## III. DRAFT FREEDOM OF INFORMATION (FOI) QUERY / CONGRESSIONAL INQUIRY
+
+If submitting a formal FOI request or Congressional Inquiry to DBM or agency budget officers, use the following exact wording:
+
+> *"Pursuant to Executive Order No. 2 (s. 2016) on Freedom of Information, we request official copy of the Work and Financial Plan (WFP) and Special Allotment Release Orders (SARO) corresponding to the line items cited above. Specifically, we request cell-level justification for the variance between R.A. 12116 and R.A. 12314."*
+
+---
+
+## IV. CONCLUSION
+
+Simply put: what is written in the General Appropriations Act represents legislative mandate. The next step is to monitor actual obligation and disbursement velocity.
+
+And that is where public fiscal accountability begins.
+"""
+    return sanitize_anti_slop(memo)
