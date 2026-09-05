@@ -7,7 +7,7 @@ from budget_inspector.writer import write_kerwin_investigative_story
 DB_PATH = "data/budget.duckdb"
 
 def build_dashboard_html():
-    print("[Dashboard] Updating preview.html with refined logo sizing, journalistic editorial badges, and orientation CSS...")
+    print("[Dashboard] Generating newsroom-style preview.html with explicit Increases/Decreases filter toggles...")
     conn = duckdb.connect(DB_PATH, read_only=True)
     
     # 1. Key Metrics
@@ -23,16 +23,25 @@ def build_dashboard_html():
     rows_25 = cnt25[0] if cnt25 else 0
     rows_26 = cnt26[0] if cnt26 else 0
     
-    # 2. Top Increases
+    # 2. Top Increases (+)
     df_inc = conn.execute("""
         SELECT department_name, agency_name, prexc_fpap_id, description, expense_class, amount_2025_pesos, amount_2026_pesos, absolute_change_pesos, percent_change
         FROM pap_comparison
-        WHERE amount_2025_pesos >= 10000000.0
+        WHERE amount_2025_pesos >= 10000000.0 AND absolute_change_pesos > 0
         ORDER BY absolute_change_pesos DESC
         LIMIT 25
     """).df()
     
-    # 3. New Items
+    # 3. Top Decreases (-)
+    df_dec = conn.execute("""
+        SELECT department_name, agency_name, prexc_fpap_id, description, expense_class, amount_2025_pesos, amount_2026_pesos, absolute_change_pesos, percent_change
+        FROM pap_comparison
+        WHERE amount_2025_pesos >= 10000000.0 AND absolute_change_pesos < 0
+        ORDER BY absolute_change_pesos ASC
+        LIMIT 25
+    """).df()
+    
+    # 4. New Items
     df_new = conn.execute("""
         SELECT department_name, agency_name, prexc_fpap_id, description, expense_class, amount_2026_pesos
         FROM pap_comparison
@@ -41,7 +50,7 @@ def build_dashboard_html():
         LIMIT 25
     """).df()
     
-    # 4. Flood Control
+    # 5. Flood Control & Infrastructure
     df_fc = conn.execute("""
         SELECT department_name, agency_name, prexc_fpap_id, description, expense_class, amount_2025_pesos, amount_2026_pesos, absolute_change_pesos, percent_change
         FROM pap_comparison
@@ -66,8 +75,6 @@ def build_dashboard_html():
                     rec = json.load(f)
                     md_story = write_kerwin_investigative_story(rec)
                     rec["rendered_html"] = markdown.markdown(md_story, extensions=['fenced_code', 'tables', 'nl2br'])
-                    
-                    # Map raw category code to professional newsroom badge name
                     raw_cat = rec.get("category", "LARGE_INCREASE")
                     cat_map = {
                         "LARGE_INCREASE": "BUDGET EXPANSION",
@@ -79,6 +86,7 @@ def build_dashboard_html():
                     receipts.append(rec)
                     
     inc_json = json.dumps(df_inc.fillna("").to_dict(orient="records"))
+    dec_json = json.dumps(df_dec.fillna("").to_dict(orient="records"))
     new_json = json.dumps(df_new.fillna("").to_dict(orient="records"))
     fc_json = json.dumps(df_fc.fillna("").to_dict(orient="records"))
     receipts_json = json.dumps(receipts)
@@ -102,6 +110,7 @@ def build_dashboard_html():
       --border: #1e2a3c;
       --success: #10b981;
       --warning: #f59e0b;
+      --danger: #ef4444;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }}
@@ -115,7 +124,6 @@ def build_dashboard_html():
       padding: 1.25rem;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      -webkit-text-size-adjust: 100%;
     }}
     
     header {{
@@ -256,6 +264,7 @@ def build_dashboard_html():
     }}
     .badge-verified {{ background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }}
     .badge-high {{ background: rgba(59, 130, 246, 0.15); color: var(--accent); border: 1px solid var(--accent); }}
+    .badge-warning {{ background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }}
     
     .headline-title {{
       font-size: 1.5rem;
@@ -300,30 +309,34 @@ def build_dashboard_html():
       margin-bottom: 2rem;
     }}
     
-    .nav-tabs {{
+    /* Segmented Filter Toggle Control Bar */
+    .filter-toggle-bar {{
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
       margin-bottom: 1.25rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.5rem;
+      background: #0d1422;
+      padding: 0.4rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }}
     
-    .tab-btn {{
+    .toggle-btn {{
       background: transparent;
-      border: none;
+      border: 1px solid transparent;
       color: var(--muted);
-      padding: 0.6rem 0.9rem;
+      padding: 0.5rem 0.85rem;
       font-weight: 600;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       cursor: pointer;
       border-radius: 6px;
       white-space: nowrap;
-      transition: all 0.2s;
+      transition: all 0.15s;
     }}
-    .tab-btn:hover {{ color: var(--fg); background: rgba(255,255,255,0.05); }}
-    .tab-btn.active {{ color: #fff; background: var(--accent); }}
+    .toggle-btn:hover {{ color: var(--fg); background: rgba(255,255,255,0.05); }}
+    .toggle-btn.active {{ color: #fff; background: var(--accent); border-color: var(--accent); }}
+    .toggle-btn.active-dec {{ color: #fff; background: #dc2626; border-color: #dc2626; }}
     
     .tab-content {{ display: none; }}
     .tab-content.active {{ display: block; }}
@@ -356,6 +369,7 @@ def build_dashboard_html():
     tr.clickable-row:hover td {{ background: var(--card-hover); }}
     .num {{ font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }}
     .text-green {{ color: var(--success); font-weight: 600; }}
+    .text-red {{ color: var(--danger); font-weight: 600; }}
     
     .leads-grid {{
       display: grid;
@@ -419,7 +433,7 @@ def build_dashboard_html():
     }}
     .modal-close {{ background: transparent; border: none; color: var(--muted); font-size: 1.6rem; cursor: pointer; padding: 0 0.5rem; }}
     
-    /* MOBILE RESPONSIVENESS & LANDSCAPE VS PORTRAIT OVERRIDES */
+    /* MOBILE RESPONSIVENESS OVERRIDES */
     @media (max-width: 900px) {{
       .newsroom-layout {{ grid-template-columns: 1fr; }}
     }}
@@ -544,11 +558,13 @@ def build_dashboard_html():
     <canvas id="increasesChart" style="max-height: 280px;"></canvas>
   </div>
 
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab(event, 'leads')">🔍 Verified Lead Articles</button>
-    <button class="tab-btn" onclick="switchTab(event, 'top-inc')">📈 Top Increases Table</button>
-    <button class="tab-btn" onclick="switchTab(event, 'new-items')">🆕 New Items (2026)</button>
-    <button class="tab-btn" onclick="switchTab(event, 'flood')">🌊 Flood Control ({len(df_fc)} Lines)</button>
+  <!-- Filter Toggle Control Bar -->
+  <div class="filter-toggle-bar">
+    <button class="toggle-btn active" onclick="switchTab(event, 'leads')">🔍 Verified Lead Articles</button>
+    <button class="toggle-btn" onclick="switchTab(event, 'top-inc')">📈 Increases (+)</button>
+    <button class="toggle-btn" onclick="switchTab(event, 'top-dec')">📉 Decreases (-)</button>
+    <button class="toggle-btn" onclick="switchTab(event, 'new-items')">🆕 New Items (2026)</button>
+    <button class="toggle-btn" onclick="switchTab(event, 'flood')">🌊 Flood Control ({len(df_fc)} Lines)</button>
   </div>
 
   <input type="text" id="searchInput" class="search-bar" placeholder="Smart search across all articles, agencies, descriptions, or UACS codes... Press '/' to focus" onkeyup="smartFuzzyFilter()">
@@ -560,7 +576,7 @@ def build_dashboard_html():
     <div class="leads-grid" id="leads-container"></div>
   </div>
 
-  <!-- TAB 2: TOP INCREASES -->
+  <!-- TAB 2: TOP INCREASES (+) -->
   <div id="top-inc" class="tab-content">
     <div class="data-table-wrapper">
       <table id="table-inc">
@@ -579,7 +595,26 @@ def build_dashboard_html():
     </div>
   </div>
 
-  <!-- TAB 3: NEW ITEMS -->
+  <!-- TAB 3: TOP DECREASES (-) -->
+  <div id="top-dec" class="tab-content">
+    <div class="data-table-wrapper">
+      <table id="table-dec">
+        <thead>
+          <tr>
+            <th>Agency</th>
+            <th>Program / Project Description</th>
+            <th class="num">2025 Amount</th>
+            <th class="num">2026 Amount</th>
+            <th class="num">Reduction (Pesos)</th>
+            <th class="num">Change</th>
+          </tr>
+        </thead>
+        <tbody id="body-dec"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 4: NEW ITEMS -->
   <div id="new-items" class="tab-content">
     <div class="data-table-wrapper">
       <table id="table-new">
@@ -596,7 +631,7 @@ def build_dashboard_html():
     </div>
   </div>
 
-  <!-- TAB 4: FLOOD CONTROL -->
+  <!-- TAB 5: FLOOD CONTROL -->
   <div id="flood" class="tab-content">
     <div class="data-table-wrapper">
       <table id="table-fc">
@@ -636,6 +671,7 @@ def build_dashboard_html():
 
   <script>
     const dataInc = {inc_json};
+    const dataDec = {dec_json};
     const dataNew = {new_json};
     const dataFc = {fc_json};
     const dataReceipts = {receipts_json};
@@ -650,8 +686,8 @@ def build_dashboard_html():
     }}
 
     function formatPHP(amount) {{
-      if (amount >= 1e9) return "₱" + (amount / 1e9).toFixed(2) + "B";
-      if (amount >= 1e6) return "₱" + (amount / 1e6).toFixed(2) + "M";
+      if (Math.abs(amount) >= 1e9) return "₱" + (amount / 1e9).toFixed(2) + "B";
+      if (Math.abs(amount) >= 1e6) return "₱" + (amount / 1e6).toFixed(2) + "M";
       return "₱" + amount.toLocaleString();
     }}
 
@@ -704,6 +740,20 @@ def build_dashboard_html():
           <td class="num">${{formatPHP(r.amount_2026_pesos)}}</td>
           <td class="num text-green">+${{formatPHP(r.absolute_change_pesos)}}</td>
           <td class="num text-green">+${{r.percent_change ? r.percent_change.toFixed(1) : 0}}%</td>
+        </tr>
+      `).join("");
+    }}
+
+    function populateDecreases() {{
+      const tbody = document.getElementById("body-dec");
+      tbody.innerHTML = dataDec.map(r => `
+        <tr class="clickable-row" onclick="openRowDetail('${{r.agency_name.replace(/'/g, "\\'")}}', '${{r.description.replace(/'/g, "\\'")}}')">
+          <td><strong>${{r.agency_name}}</strong></td>
+          <td>${{r.description}}</td>
+          <td class="num">${{formatPHP(r.amount_2025_pesos)}}</td>
+          <td class="num">${{formatPHP(r.amount_2026_pesos)}}</td>
+          <td class="num text-red">${{formatPHP(r.absolute_change_pesos)}}</td>
+          <td class="num text-red">${{r.percent_change ? r.percent_change.toFixed(1) : 0}}%</td>
         </tr>
       `).join("");
     }}
@@ -787,10 +837,14 @@ def build_dashboard_html():
     }}
 
     function switchTab(event, tabId) {{
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active", "active-dec"));
       document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
       
-      event.target.classList.add("active");
+      if (tabId === "top-dec") {{
+        event.target.classList.add("active-dec");
+      }} else {{
+        event.target.classList.add("active");
+      }}
       document.getElementById(tabId).classList.add("active");
     }}
 
@@ -833,6 +887,7 @@ def build_dashboard_html():
 
     // Initialize
     populateIncreases();
+    populateDecreases();
     populateNew();
     populateFlood();
     populateLeads();
