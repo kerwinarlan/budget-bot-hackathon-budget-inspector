@@ -5,7 +5,7 @@ import duckdb
 DB_PATH = "data/budget.duckdb"
 
 def build_dashboard_html():
-    print("[Dashboard] Generating interactive preview.html with Vibe Coders PH logo and clickable article panels...")
+    print("[Dashboard] Generating newsroom-style preview.html with Vibe Coders PH logos, Chart.js graphs, and PDF/HTML download actions...")
     conn = duckdb.connect(DB_PATH, read_only=True)
     
     # 1. Key Metrics
@@ -69,16 +69,18 @@ def build_dashboard_html():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Budget Inspector — Philippine Budget Bot Hackathon Dashboard</title>
+  <title>Budget Inspector — Newsroom Desk & Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {{
-      --bg: #090d16;
-      --card-bg: #131b2a;
-      --card-hover: #1c2738;
+      --bg: #080c14;
+      --card-bg: #121926;
+      --card-hover: #172235;
       --fg: #f8fafc;
       --muted: #94a3b8;
       --accent: #3b82f6;
-      --border: #202d42;
+      --accent-hover: #2563eb;
+      --border: #1e2a3c;
       --success: #10b981;
       --warning: #f59e0b;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -128,6 +130,36 @@ def build_dashboard_html():
       color: var(--muted);
     }}
     
+    .header-actions {{
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }}
+    
+    .btn {{
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid transparent;
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }}
+    .btn:hover {{ background: var(--accent-hover); }}
+    
+    .btn-secondary {{
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--fg);
+    }}
+    .btn-secondary:hover {{ background: var(--card-hover); border-color: var(--accent); }}
+    
     .metrics-grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -139,18 +171,18 @@ def build_dashboard_html():
       background: var(--card-bg);
       border: 1px solid var(--border);
       padding: 1.25rem;
-      border-radius: 12px;
+      border-radius: 10px;
     }}
     
     .metric-card span {{
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }}
     
     .metric-card .value {{
-      font-size: 1.6rem;
+      font-size: 1.55rem;
       font-weight: 700;
       margin-top: 0.25rem;
       font-family: var(--mono);
@@ -161,6 +193,89 @@ def build_dashboard_html():
       font-size: 0.8rem;
       color: var(--success);
       margin-top: 0.25rem;
+    }}
+    
+    /* Editorial Layout */
+    .newsroom-layout {{
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 1.75rem;
+      margin-bottom: 2.5rem;
+    }}
+    @media (max-width: 900px) {{
+      .newsroom-layout {{ grid-template-columns: 1fr; }}
+    }}
+    
+    .headline-panel {{
+      background: linear-gradient(180deg, #162033 0%, #121926 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }}
+    
+    .headline-kicker {{
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }}
+    
+    .badge {{
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }}
+    .badge-verified {{ background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }}
+    .badge-high {{ background: rgba(59, 130, 246, 0.15); color: var(--accent); border: 1px solid var(--accent); }}
+    
+    .headline-title {{
+      font-size: 1.65rem;
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }}
+    
+    .headline-deck {{
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }}
+    
+    .headline-provenance-box {{
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+    }}
+    
+    .sidebar-panel {{
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }}
+    
+    .sidebar-card {{
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }}
+    
+    .chart-container {{
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
     }}
     
     .nav-tabs {{
@@ -183,23 +298,11 @@ def build_dashboard_html():
       transition: all 0.2s;
     }}
     
-    .tab-btn:hover {{
-      color: var(--fg);
-      background: rgba(255,255,255,0.05);
-    }}
+    .tab-btn:hover {{ color: var(--fg); background: rgba(255,255,255,0.05); }}
+    .tab-btn.active {{ color: #fff; background: var(--accent); }}
     
-    .tab-btn.active {{
-      color: #fff;
-      background: var(--accent);
-    }}
-    
-    .tab-content {{
-      display: none;
-    }}
-    
-    .tab-content.active {{
-      display: block;
-    }}
+    .tab-content {{ display: none; }}
+    .tab-content.active {{ display: block; }}
     
     .search-bar {{
       width: 100%;
@@ -219,51 +322,18 @@ def build_dashboard_html():
       border-radius: 12px;
     }}
     
-    table {{
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.88rem;
-    }}
-    
-    th, td {{
-      padding: 0.85rem 1rem;
-      border-bottom: 1px solid var(--border);
-    }}
-    
-    th {{
-      background: rgba(0,0,0,0.3);
-      color: var(--muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-    }}
-    
-    tr:last-child td {{
-      border-bottom: none;
-    }}
-    
-    tr.clickable-row {{
-      cursor: pointer;
-      transition: background 0.15s;
-    }}
-    
-    tr.clickable-row:hover td {{
-      background: var(--card-hover);
-    }}
-    
-    .num {{
-      font-family: var(--mono);
-      font-variant-numeric: tabular-nums;
-      text-align: right;
-    }}
-    
+    table {{ width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }}
+    th, td {{ padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }}
+    th {{ background: rgba(0,0,0,0.3); color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }}
+    tr.clickable-row {{ cursor: pointer; transition: background 0.15s; }}
+    tr.clickable-row:hover td {{ background: var(--card-hover); }}
+    .num {{ font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }}
     .text-green {{ color: var(--success); font-weight: 600; }}
     
     .leads-grid {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
     }}
     
     .clickable-card {{
@@ -277,60 +347,12 @@ def build_dashboard_html():
       cursor: pointer;
       transition: all 0.2s ease;
     }}
+    .clickable-card:hover {{ background: var(--card-hover); border-color: var(--accent); transform: translateY(-2px); }}
     
-    .clickable-card:hover {{
-      background: var(--card-hover);
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    }}
-    
-    .lead-header {{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }}
-    
-    .lead-id {{
-      font-family: var(--mono);
-      background: var(--border);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-    }}
-    
-    .lead-cat {{
-      font-size: 0.75rem;
-      color: var(--accent);
-      font-weight: 600;
-    }}
-    
-    .lead-title {{
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.4;
-    }}
-    
-    .lead-obs {{
-      font-size: 0.85rem;
-      color: var(--muted);
-    }}
-    
-    .click-prompt {{
-      font-size: 0.8rem;
-      color: var(--accent);
-      font-weight: 600;
-      margin-top: auto;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }}
-    
-    /* Modal Article Viewer */
     .modal-overlay {{
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.75);
+      background: rgba(0,0,0,0.8);
       backdrop-filter: blur(6px);
       z-index: 1000;
       display: none;
@@ -341,7 +363,7 @@ def build_dashboard_html():
     .modal-overlay.active {{ display: flex; }}
     
     .modal-card {{
-      background: #0f172a;
+      background: #0d1321;
       border: 1px solid var(--border);
       border-radius: 14px;
       width: 100%;
@@ -349,7 +371,6 @@ def build_dashboard_html():
       max-height: 85vh;
       overflow-y: auto;
       padding: 2rem;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
     }}
     
     .modal-header {{
@@ -360,25 +381,7 @@ def build_dashboard_html():
       padding-bottom: 1rem;
       border-bottom: 1px solid var(--border);
     }}
-    
-    .modal-close {{
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }}
-    .modal-close:hover {{ color: var(--fg); }}
-    
-    .badge {{
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      font-family: var(--mono);
-    }}
-    .badge-verified {{ background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }}
+    .modal-close {{ background: transparent; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }}
     
     footer {{
       margin-top: 3rem;
@@ -388,12 +391,7 @@ def build_dashboard_html():
       border-top: 1px solid var(--border);
       padding-top: 1.5rem;
     }}
-    
-    footer .vibe-logo-footer {{
-      height: 32px;
-      width: auto;
-      margin-top: 0.75rem;
-    }}
+    footer img {{ height: 32px; width: auto; margin-top: 0.75rem; }}
   </style>
 </head>
 <body>
@@ -406,9 +404,15 @@ def build_dashboard_html():
         <p>Evidence-First Philippine Budget Agent Desk — Team Vibe Coders PH</p>
       </div>
     </div>
-    <img src="assets/vibe_coders_logo_star.png" alt="Vibe Coders Emblem" style="height:36px; width:auto;">
+    
+    <div class="header-actions">
+      <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn btn-secondary">📄 Download PDF Brief</a>
+      <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary">🌐 Download HTML Brief</a>
+      <img src="assets/vibe_coders_logo_star.png" alt="Emblem" style="height:36px; width:auto; margin-left:0.5rem;">
+    </div>
   </header>
 
+  <!-- Macro Metrics -->
   <div class="metrics-grid">
     <div class="metric-card">
       <span>FY 2025 GAA Total</span>
@@ -432,9 +436,58 @@ def build_dashboard_html():
     </div>
   </div>
 
+  <!-- Newsroom Layout -->
+  <div class="newsroom-layout">
+    <div class="headline-panel">
+      <div class="headline-kicker">
+        <span class="badge badge-high">SPECIAL INVESTIGATIVE REPORT</span>
+        <span class="badge badge-verified">VERIFIED PROVENANCE</span>
+      </div>
+      <h2 class="headline-title">DepEd School Building Construction Allocation Surges +215.3% to ₱80.21 Billion in FY 2026</h2>
+      <p class="headline-deck">Line-item inspection of official DBM GAA spreadsheets reveals a <strong>+₱54.77 Billion expansion</strong> for DepEd's <em>Basic Education Facilities</em> program, marking the largest single program increase within the Department of Education.</p>
+      
+      <div class="headline-provenance-box">
+        <div style="font-weight:700; color:var(--accent); margin-bottom:0.35rem;">SPREADSHEET CELL CITATIONS:</div>
+        <div>• <strong>2025 GAA Workbook</strong>: <code>GAA-2025.xlsx</code> | Sheet <code>Sheet 1</code> | Excel Row <strong style="color:var(--accent);">121894</strong> (₱25.44B)</div>
+        <div>• <strong>2026 GAA Workbook</strong>: <code>FY2026-GAA-Byobject.xlsx</code> | Sheet <code>Sheet 1</code> | Excel Row <strong style="color:var(--success);">124510</strong> (₱80.21B)</div>
+      </div>
+      
+      <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+        <button class="btn" onclick="openLeadArticle(2)">📖 Read Full Investigation Article →</button>
+        <a href="reports/briefs/Budget_Inspector_Brief_001.pdf" download class="btn btn-secondary">📄 Download PDF Brief</a>
+      </div>
+    </div>
+
+    <div class="sidebar-panel">
+      <div class="sidebar-card">
+        <h3 style="font-size:1.05rem; margin-bottom:0.75rem; color:var(--accent);">📰 Publisher Desk</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem;">Produced by <strong>Team Vibe Coders PH</strong> for the Philippine Budget Bot AI Hackathon.</p>
+        <a href="reports/briefs/Budget_Inspector_Brief_001.html" download class="btn btn-secondary" style="width:100%; justify-content:center;">🌐 Download HTML Brief</a>
+      </div>
+
+      <div class="sidebar-card">
+        <h3 style="font-size:1.05rem; margin-bottom:0.75rem;">📁 Active Case Files</h3>
+        <ul style="list-style:none; font-size:0.85rem; display:flex; flex-direction:column; gap:0.5rem;">
+          <li><span class="badge badge-high">BI-2026-001</span> DepEd Facilities (+₱54.8B)</li>
+          <li><span class="badge badge-high">BI-2026-002</span> PhilHealth Subsidies (₱113.1B)</li>
+          <li><span class="badge badge-high">BI-2026-003</span> DPWH Flood Mitigation (+₱1.1B)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Chart.js Visualization -->
+  <div class="chart-container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <h3 style="font-size:1.1rem; color:var(--fg);">📊 Visual Inspection: Top Budget Increases (2025 vs 2026)</h3>
+      <span style="font-size:0.8rem; color:var(--muted);">Amount in Billion Pesos (₱B)</span>
+    </div>
+    <canvas id="increasesChart" style="max-height: 280px;"></canvas>
+  </div>
+
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab(event, 'leads')">🔍 Verified Lead Articles</button>
-    <button class="tab-btn" onclick="switchTab(event, 'top-inc')">📈 Top Increases</button>
+    <button class="tab-btn" onclick="switchTab(event, 'top-inc')">📈 Top Increases Table</button>
     <button class="tab-btn" onclick="switchTab(event, 'new-items')">🆕 New Items (2026)</button>
     <button class="tab-btn" onclick="switchTab(event, 'flood')">🌊 Flood Control</button>
   </div>
@@ -516,7 +569,7 @@ def build_dashboard_html():
 
   <footer>
     <p><strong>Budget Inspector</strong> &copy; 2026 Vibe Coders PH. Data Source: Department of Budget and Management (DBM) General Appropriations Acts.</p>
-    <img src="assets/vibe_coders_logo_white.png" alt="Vibe Coders PH" class="vibe-logo-footer">
+    <img src="assets/vibe_coders_logo_white.png" alt="Vibe Coders PH">
     <p style="margin-top:0.4rem; font-size:0.78rem;">Skill Fork: <code>kerwinarlan/budget-bot-skill</code> (forked from <code>tordecilla/budget-bot-skill</code>)</p>
   </footer>
 
@@ -530,6 +583,45 @@ def build_dashboard_html():
       if (amount >= 1e9) return "₱" + (amount / 1e9).toFixed(2) + "B";
       if (amount >= 1e6) return "₱" + (amount / 1e6).toFixed(2) + "M";
       return "₱" + amount.toLocaleString();
+    }}
+
+    function renderIncreasesChart() {{
+      const ctx = document.getElementById('increasesChart').getContext('2d');
+      const top5 = dataInc.slice(0, 6);
+      
+      new Chart(ctx, {{
+        type: 'bar',
+        data: {{
+          labels: top5.map(r => r.description.length > 30 ? r.description.substring(0, 30) + '...' : r.description),
+          datasets: [
+            {{
+              label: '2025 Allocation (₱B)',
+              data: top5.map(r => (r.amount_2025_pesos / 1e9).toFixed(2)),
+              backgroundColor: 'rgba(148, 163, 184, 0.4)',
+              borderColor: '#94a3b8',
+              borderWidth: 1
+            }},
+            {{
+              label: '2026 Allocation (₱B)',
+              data: top5.map(r => (r.amount_2026_pesos / 1e9).toFixed(2)),
+              backgroundColor: 'rgba(59, 130, 246, 0.7)',
+              borderColor: '#3b82f6',
+              borderWidth: 1
+            }}
+          ]
+        }},
+        options: {{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {{
+            legend: {{ labels: {{ color: '#94a3b8', font: {{ family: 'sans-serif' }} }} }}
+          }},
+          scales: {{
+            x: {{ ticks: {{ color: '#94a3b8', font: {{ size: 10 }} }}, grid: {{ color: 'rgba(255,255,255,0.05)' }} }},
+            y: {{ ticks: {{ color: '#94a3b8' }}, grid: {{ color: 'rgba(255,255,255,0.05)' }} }}
+          }}
+        }}
+      }});
     }}
 
     function populateIncreases() {{
@@ -581,7 +673,7 @@ def build_dashboard_html():
           </div>
           <div class="lead-title">${{l.title}}</div>
           <div class="lead-obs">${{l.observation}}</div>
-          <div class="click-prompt">📖 Read Full Article File & Provenance →</div>
+          <div style="font-size:0.8rem; color:var(--accent); font-weight:600; margin-top:auto;">📖 Read Investigation Article File →</div>
         </div>
       `).join("");
     }}
@@ -664,6 +756,7 @@ def build_dashboard_html():
     populateNew();
     populateFlood();
     populateLeads();
+    renderIncreasesChart();
   </script>
 </body>
 </html>
@@ -674,7 +767,7 @@ def build_dashboard_html():
     with open(out_path, "w") as f:
         f.write(html_content)
         
-    print(f"[Dashboard] Generated interactive dashboard at {out_path}")
+    print(f"[Dashboard] Generated newsroom preview at {out_path}")
     return out_path
 
 if __name__ == "__main__":
