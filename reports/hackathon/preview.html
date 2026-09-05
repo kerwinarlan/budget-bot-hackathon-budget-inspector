@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Inspector — Philippine Budget Bot Hackathon Dashboard</title>
+  <style>
+    :root {
+      --bg: var(--background, #0f172a);
+      --card-bg: var(--card, #1e293b);
+      --fg: var(--foreground, #f8fafc);
+      --muted: var(--muted-foreground, #94a3b8);
+      --accent: var(--accent, #3b82f6);
+      --accent-hover: #2563eb;
+      --border: var(--border, #334155);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--fg);
+      padding: 1.5rem;
+      line-height: 1.5;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .brand-logo {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .brand-title h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .brand-title p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    
+    .badge-team {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      border-radius: 12px;
+    }
+    
+    .metric-card span {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .metric-card .value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+    
+    .metric-card .sub {
+      font-size: 0.8rem;
+      color: var(--success);
+      margin-top: 0.25rem;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 0.6rem 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    
+    .tab-btn:hover {
+      color: var(--fg);
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .tab-btn.active {
+      color: #fff;
+      background: var(--accent);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .search-bar {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    
+    .data-table-wrapper {
+      overflow-x: auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    
+    th, td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    th {
+      background: rgba(0,0,0,0.2);
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+    
+    tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+    
+    .num {
+      font-family: monospace;
+      text-align: right;
+    }
+    
+    .text-green { color: var(--success); font-weight: 600; }
+    .text-magenta { color: #e06c75; font-weight: 600; }
+    
+    .leads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .lead-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .lead-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .lead-id {
+      font-family: monospace;
+      background: var(--border);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    
+    .lead-cat {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    .lead-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    
+    .lead-obs {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    
+    .lead-prov {
+      background: rgba(0,0,0,0.3);
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: monospace;
+    }
+    
+    .btn-receipt {
+      align-self: flex-start;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .btn-receipt:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">PH</div>
+      <div class="brand-title">
+        <h1>Budget Inspector Dashboard</h1>
+        <p>Philippine Budget Bot AI Hackathon Deliverable — FY 2025 vs FY 2026 GAA Analysis</p>
+      </div>
+    </div>
+    <div class="badge-team">Team Vibe Coders</div>
+  </header>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <span>FY 2025 GAA Total</span>
+      <div class="value">₱6.327 Trillion</div>
+      <div class="sub">539,379 Normalized Lines</div>
+    </div>
+    <div class="metric-card">
+      <span>FY 2026 GAA Total</span>
+      <div class="value">₱6.793 Trillion</div>
+      <div class="sub">522,214 Normalized Lines</div>
+    </div>
+    <div class="metric-card">
+      <span>Net Budget Expansion</span>
+      <div class="value text-green">+₱466.48 Billion</div>
+      <div class="sub">+7.37% Headline Growth</div>
+    </div>
+    <div class="metric-card">
+      <span>Data Reconciliation</span>
+      <div class="value text-green">100.0% Exact</div>
+      <div class="sub">Cell-Level Row Provenance</div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab(event, 'top-inc')">📈 Top Increases</button>
+    <button class="tab-btn" onclick="switchTab(event, 'new-items')">🆕 New Items (2026)</button>
+    <button class="tab-btn" onclick="switchTab(event, 'flood')">🌊 Flood Control</button>
+    <button class="tab-btn" onclick="switchTab(event, 'leads')">🔍 Verified Leads & Receipts</button>
+  </div>
+
+  <input type="text" id="searchInput" class="search-bar" placeholder="Filter line items by agency, description, or UACS code..." onkeyup="filterTables()">
+
+  <!-- TAB 1: TOP INCREASES -->
+  <div id="top-inc" class="tab-content active">
+    <div class="data-table-wrapper">
+      <table id="table-inc">
+        <thead>
+          <tr>
+            <th>Agency</th>
+            <th>Program / Project Description</th>
+            <th class="num">2025 Amount</th>
+            <th class="num">2026 Amount</th>
+            <th class="num">Delta (Pesos)</th>
+            <th class="num">Growth</th>
+          </tr>
+        </thead>
+        <tbody id="body-inc"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 2: NEW ITEMS -->
+  <div id="new-items" class="tab-content">
+    <div class="data-table-wrapper">
+      <table id="table-new">
+        <thead>
+          <tr>
+            <th>Agency</th>
+            <th>Program / Project Description</th>
+            <th>Expense Class</th>
+            <th class="num">2026 Amount (Pesos)</th>
+          </tr>
+        </thead>
+        <tbody id="body-new"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 3: FLOOD CONTROL -->
+  <div id="flood" class="tab-content">
+    <div class="data-table-wrapper">
+      <table id="table-fc">
+        <thead>
+          <tr>
+            <th>Agency</th>
+            <th>Flood Control Description</th>
+            <th class="num">2025 Amount</th>
+            <th class="num">2026 Amount</th>
+            <th class="num">Delta (Pesos)</th>
+          </tr>
+        </thead>
+        <tbody id="body-fc"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 4: VERIFIED LEADS -->
+  <div id="leads" class="tab-content">
+    <div class="leads-grid" id="leads-container"></div>
+  </div>
+
+  <footer>
+    <p>Budget Inspector &copy; 2026 Vibe Coders. Data Source: Department of Budget and Management (DBM) General Appropriations Acts.</p>
+    <p style="margin-top:0.25rem;">Skill Fork: <code>kerwinarlan/budget-bot-skill</code> (forked from <code>tordecilla/budget-bot-skill</code>)</p>
+  </footer>
+
+  <script>
+    const dataInc = [{"department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 1034604869000.0, "amount_2026_pesos": 1190509672000.0, "absolute_change_pesos": 155904803000.0, "percent_change": 15.069018875842929}, {"department_name": "Automatic Appropriations", "agency_name": "Debt Interest Payments", "prexc_fpap_id": "401000000001000", "description": "For the Payment of Interest of Foreign and Domestic Indebtedness", "expense_class": "Financial Expenses", "amount_2025_pesos": 848030688000.0, "amount_2026_pesos": 950000000000.0, "absolute_change_pesos": 101969312000.0, "percent_change": 12.02424787721833}, {"department_name": "Department of Education (DepEd)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310200100006000", "description": "Basic Education Facilities", "expense_class": "Capital Outlays", "amount_2025_pesos": 25440800000.0, "amount_2026_pesos": 80206105000.0, "absolute_change_pesos": 54765305000.0, "percent_change": 215.2656559542153}, {"department_name": "Department of Education (DepEd)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310400100002000", "description": "Operation of Schools - Elementary (Kinder to Grade 6)", "expense_class": "Personnel Services", "amount_2025_pesos": 300446708000.0, "amount_2026_pesos": 351596236000.0, "absolute_change_pesos": 51149528000.0, "percent_change": 17.02449274298589}, {"department_name": "Department of Social Welfare and Development (DSWD)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310100100001000", "description": "Pantawid Pamilyang Pilipino Program (Implementation of Conditional Cash Transfer)", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 56403664000.0, "amount_2026_pesos": 100440280000.0, "absolute_change_pesos": 44036616000.0, "percent_change": 78.07403433932944}, {"department_name": "Department of Education (DepEd)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310400100003000", "description": "Operation of Schools - Junior High School (Grade 7 to Grade 10)", "expense_class": "Personnel Services", "amount_2025_pesos": 169224047000.0, "amount_2026_pesos": 197411977000.0, "absolute_change_pesos": 28187930000.0, "percent_change": 16.657165751389932}, {"department_name": "Department of Transportation (DOTr)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310102300008000", "description": "North-South Commuter Railway (NSCR) System ADB Loan Nos. 3796-PHI and 4188-PHI, and JICA Loan Nos. PH-P262, PH-P270, PH-P277 and PH-P276", "expense_class": "Capital Outlays", "amount_2025_pesos": 9442224000.0, "amount_2026_pesos": 28793610000.0, "absolute_change_pesos": 19351386000.0, "percent_change": 204.94521206020954}, {"department_name": "New General Appropriations", "agency_name": "Miscellaneous Personnel Benefits Fund", "prexc_fpap_id": "400700000001000", "description": "Performance-Based Bonus", "expense_class": "Personnel Services", "amount_2025_pesos": 8000000000.0, "amount_2026_pesos": 27201769000.0, "absolute_change_pesos": 19201769000.0, "percent_change": 240.0221125}, {"department_name": "Department of Social Welfare and Development (DSWD)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "320104100001000", "description": "Protective services for individuals and families in difficult circumstances", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 44685266000.0, "amount_2026_pesos": 63845435000.0, "absolute_change_pesos": 19160169000.0, "percent_change": 42.87804619983688}, {"department_name": "New General Appropriations", "agency_name": "Local Government Support Fund (formerly Financial Subsidy to LGUs)", "prexc_fpap_id": "400204000001000", "description": "Financial Assistance to Local Government Units", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 18949970000.0, "amount_2026_pesos": 37492578000.0, "absolute_change_pesos": 18542608000.0, "percent_change": 97.85032905065285}, {"department_name": "Department of the Interior and Local Government (DILG)", "agency_name": "Philippine National Police", "prexc_fpap_id": "310100100002000", "description": "Conduct of police patrol operations and other related confidential activities against dissidents, subversives, lawless elements and organized crime syndicates and campaign against kidnapping, trafficking of women and minors, smuggling, carnapping, gunrunning, illegal fishing and trafficking of illegal drugs", "expense_class": "Personnel Services", "amount_2025_pesos": 163679568000.0, "amount_2026_pesos": 180772027000.0, "absolute_change_pesos": 17092459000.0, "percent_change": 10.442634477138894}, {"department_name": "Department of Education (DepEd)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310400100004000", "description": "Operation of Schools - Senior High School (Grade 11 to Grade 12)", "expense_class": "Personnel Services", "amount_2025_pesos": 50900612000.0, "amount_2026_pesos": 67192855000.0, "absolute_change_pesos": 16292243000.0, "percent_change": 32.007951102827604}, {"department_name": "New General Appropriations", "agency_name": "Miscellaneous Personnel Benefits Fund", "prexc_fpap_id": "400700000006000", "description": "Funding Requirements for Staffing Modifications and Upgrading of Salaries", "expense_class": "Personnel Services", "amount_2025_pesos": 12407010000.0, "amount_2026_pesos": 27195845000.0, "absolute_change_pesos": 14788835000.0, "percent_change": 119.19741339774855}, {"department_name": "Department of Health (DOH)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "360101100003000", "description": "Operations of DOH Regional Hospitals and Other Health Facilities", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 35540622000.0, "amount_2026_pesos": 48460757000.0, "absolute_change_pesos": 12920135000.0, "percent_change": 36.3531482369667}, {"department_name": "Department of Education (DepEd)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310400100001000", "description": "School-Based Feeding Program (SBFP)", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 11776932000.0, "amount_2026_pesos": 24695443000.0, "absolute_change_pesos": 12918511000.0, "percent_change": 109.69334797891335}, {"department_name": "Office of the President (OP)", "agency_name": "The President's Offices", "prexc_fpap_id": "100000200002000", "description": "Philippine Hosting of the Association of Southeast Asian Nations (ASEAN) Summits and Related Meetings in 2026", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 5048892000.0, "amount_2026_pesos": 17495734000.0, "absolute_change_pesos": 12446842000.0, "percent_change": 246.52620812645628}, {"department_name": "Department of Agriculture (DA)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310500200021000", "description": "Rice Competitiveness Enhancement Program", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 4000000000.0, "amount_2026_pesos": 15698861000.0, "absolute_change_pesos": 11698861000.0, "percent_change": 292.47152500000004}, {"department_name": "Department of Health (DOH)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "360101100003000", "description": "Operations of DOH Regional Hospitals and Other Health Facilities", "expense_class": "Personnel Services", "amount_2025_pesos": 40450554000.0, "amount_2026_pesos": 51061939000.0, "absolute_change_pesos": 10611385000.0, "percent_change": 26.232978168852767}, {"department_name": "New General Appropriations", "agency_name": "Local Government Support Fund (formerly Financial Subsidy to LGUs)", "prexc_fpap_id": "400204000014000", "description": "Growth Equity Fund", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 700000000.0, "amount_2026_pesos": 11300000000.0, "absolute_change_pesos": 10600000000.0, "percent_change": 1514.2857142857142}, {"department_name": "Automatic Appropriations", "agency_name": "Bangsamoro Autonomous Region in Muslim Mindanao (BARMM)", "prexc_fpap_id": "401800000000000", "description": "Allocations to Local Government Units - Annual Block Grant", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 83421790000.0, "amount_2026_pesos": 93982398000.0, "absolute_change_pesos": 10560608000.0, "percent_change": 12.659292014712223}];
+    const dataNew = [{"department_name": "Budgetary Support to Government Corporations (BSGC)", "agency_name": "Philippine Health Insurance Corporation", "prexc_fpap_id": "310100100003000", "description": "Additional Appropriation in Compliance with the Supreme Court Decision", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 60000000000.0}, {"department_name": "Budgetary Support to Government Corporations (BSGC)", "agency_name": "Philippine Health Insurance Corporation", "prexc_fpap_id": "310100100001000", "description": "Health insurance coverage under the Sin Tax Law", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 53134370000.0}, {"department_name": "Other Executive Offices (OEOs)", "agency_name": "Commission on Higher Education", "prexc_fpap_id": "310200100008000", "description": "Universal Access to Quality Tertiary Education", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 37546564000.0}, {"department_name": "Department of Agriculture (DA)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310203206315000", "description": "Repair/Rehabilitation and Construction of Farm-to-Market Roads in Designated Key Production Areas", "expense_class": "Capital Outlays", "amount_2026_pesos": 33009763000.0}, {"department_name": "Department of Transportation (DOTr)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310102300004000", "description": "Metro Manila Subway Project (MMSP) Phase I JICA Loan Nos. PH-P267, PH-P275 and PH-P279", "expense_class": "Capital Outlays", "amount_2026_pesos": 20388478000.0}, {"department_name": "Budgetary Support to Government Corporations (BSGC)", "agency_name": "Philippine Health Insurance Corporation", "prexc_fpap_id": "310100100002000", "description": "Benefit package improvement under Universal Health Care Law", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 16520233000.0}, {"department_name": "New General Appropriations", "agency_name": "National Disaster Risk Reduction and Management Fund ( Calamity Fund )", "prexc_fpap_id": "400300000007000", "description": "Disaster Rehabilitation and Reconstruction Assistance Program for Local Government Units", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 15330000000.0}, {"department_name": "Department of Agriculture (DA)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310500200096000", "description": "Rice for All Program", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 10000000000.0}, {"department_name": "Department of Agriculture (DA)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310500200097000", "description": "Presidential Assistance to Farmers and Fisherfolk", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 10000000000.0}, {"department_name": "Department of Education (DepEd)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310200300001000", "description": "Infrastructure for Safer and Resilient Schools (ISRS) Project WB Loan No. 9704-PH", "expense_class": "Capital Outlays", "amount_2026_pesos": 9136198000.0}, {"department_name": "Commission on Elections (COMELEC)", "agency_name": "Commission on Elections (COMELEC)", "prexc_fpap_id": "310102200018000", "description": "Barangay and Sangguniang Kabataan Elections", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 6917173000.0}, {"department_name": "Budgetary Support to Government Corporations (BSGC)", "agency_name": "National Irrigation Administration", "prexc_fpap_id": "310202100001000", "description": "Establishment of Pump Irrigation Project (EPIP)", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 6268641000.0}, {"department_name": "Budgetary Support to Government Corporations (BSGC)", "agency_name": "National Irrigation Administration", "prexc_fpap_id": "310201300001000", "description": "Jalaur River Multi Purpose Project, Stage II, Iloilo Korea EDCF Loan No. PHL-15", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 5755564000.0}, {"department_name": "Department of Health (DOH)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "350202300002000", "description": "Philippines: Health System Resilience Project, Phase 1 WB Loan No. 9781-PH", "expense_class": "Capital Outlays", "amount_2026_pesos": 5210184000.0}, {"department_name": "Department of Information and Communications Technology (DICT)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "310200200001000", "description": "Free Public Internet Access Program", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 5000000000.0}, {"department_name": "Department of Transportation (DOTr)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "320200300009000", "description": "Maritime Safety Capability Improvement Project (MSCIP) Phase III JICA Loan No. PH-P281", "expense_class": "Capital Outlays", "amount_2026_pesos": 4218513000.0}, {"department_name": "Department of Transportation (DOTr)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "320200300004000", "description": "New Cebu International Container Port Project (NCICPP) Korea EDCF Loan No. PHL-19", "expense_class": "Capital Outlays", "amount_2026_pesos": 3751053000.0}, {"department_name": "Department of Health (DOH)", "agency_name": "Office of the Secretary", "prexc_fpap_id": "350202300002000", "description": "Philippines: Health System Resilience Project, Phase 1 WB Loan No. 9781-PH", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 3459347000.0}, {"department_name": "Department of Social Welfare and Development (DSWD)", "agency_name": "National Commission of Senior Citizens", "prexc_fpap_id": "310300100001000", "description": "Implementation of the Expanded Centenarians Act pursuant to Republic Act No. 11982", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 3294607000.0}, {"department_name": "Commission on Elections (COMELEC)", "agency_name": "Commission on Elections (COMELEC)", "prexc_fpap_id": "310102200002000", "description": "Preparatory National and Local Elections", "expense_class": "Maintenance and Other Operating Expenses", "amount_2026_pesos": 2869800000.0}];
+    const dataFc = [];
+    const dataReceipts = [{"lead_id": "LEAD-INC-001", "title": "Substantial Budget Expansion: Allocation to Local Government Units - National Tax Allotmen...", "category": "LARGE_INCREASE", "confidence": "HIGH", "observation": "National Tax Allotment's program 'Allocation to Local Government Units - National Tax Allotment' increased by \u20b1155.90 Billion (+15.1%), expanding from \u20b11034.60B in 2025 to \u20b11190.51B in 2026.", "numerical_evidence": {"department": "Automatic Appropriations", "agency": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 1034604869000.0, "amount_2026_pesos": 1190509672000.0, "absolute_change_pesos": 155904803000.0, "percent_change": 15.07}, "source_years": [2025, 2026], "query_used": "pap_comparison ORDER BY absolute_change_pesos DESC", "provenance_2025": [{"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 54907189000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723080}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 52388662000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723081}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 100724087000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723082}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 122713143000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723083}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 62163457000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723084}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 81395049000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723085}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 73081581000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723086}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 61869831000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723087}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 41743740000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723088}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 55257723000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723089}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 49975676000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723090}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 44180650000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723091}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 62319971000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723092}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 30972369000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723093}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 40120512000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723094}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 44947188000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723095}, {"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 55844041000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723096}], "provenance_2026": [{"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 63168602000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736823}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 60281356000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736824}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 115902535000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736825}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 141149471000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736826}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 71530652000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736827}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 55416808000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736828}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 61292746000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736829}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 71158813000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736830}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 58317521000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736831}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 63549689000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736832}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 57475114000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736833}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 50159092000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736834}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 71573361000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736835}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 35639171000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736836}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 46152804000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736837}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 51728805000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736838}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 60940387000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736839}, {"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "National Tax Allotment", "prexc_fpap_id": "401900000000000", "raw_description": "Allocation to Local Government Units - National Tax Allotment", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021406000", "object_description": "Internal Revenue Allotment", "amount_pesos": 55072745000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736840}], "caveats": ["An appropriation increase reflects legislative authorization, not actual obligation or disbursement.", "Verify whether scope expansion or sub-item consolidation accounts for the growth."], "next_steps": ["Inspect agency budget justification documents for scope changes.", "Cross-reference with DBM Special Allotment Release Orders (SARO) when available."]}, {"lead_id": "LEAD-INC-002", "title": "Substantial Budget Expansion: For the Payment of Interest of Foreign and Domestic Indebted...", "category": "LARGE_INCREASE", "confidence": "HIGH", "observation": "Debt Interest Payments's program 'For the Payment of Interest of Foreign and Domestic Indebtedness' increased by \u20b1101.97 Billion (+12.0%), expanding from \u20b1848.03B in 2025 to \u20b1950.00B in 2026.", "numerical_evidence": {"department": "Automatic Appropriations", "agency": "Debt Interest Payments", "prexc_fpap_id": "401000000001000", "expense_class": "Financial Expenses", "amount_2025_pesos": 848030688000.0, "amount_2026_pesos": 950000000000.0, "absolute_change_pesos": 101969312000.0, "percent_change": 12.02}, "source_years": [2025, 2026], "query_used": "pap_comparison ORDER BY absolute_change_pesos DESC", "provenance_2025": [{"fiscal_year": 2025, "department_name": "Automatic Appropriations", "agency_name": "Debt Interest Payments", "prexc_fpap_id": "401000000001000", "raw_description": "For the Payment of Interest of Foreign and Domestic Indebtedness", "expense_class": "Financial Expenses", "object_code": "5030102004", "object_description": "Interest Expense - Others", "amount_pesos": 848030688000.0, "source_file": "GAA-2025.xlsx", "source_sheet": "Sheet 1", "source_row": 723078}], "provenance_2026": [{"fiscal_year": 2026, "department_name": "Automatic Appropriations", "agency_name": "Debt Interest Payments", "prexc_fpap_id": "401000000001000", "raw_description": "For the Payment of Interest of Foreign and Domestic Indebtedness", "expense_class": "Financial Expenses", "object_code": "5030102000", "object_description": "Interest Expenses", "amount_pesos": 950000000000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 736821}], "caveats": ["An appropriation increase reflects legislative authorization, not actual obligation or disbursement.", "Verify whether scope expansion or sub-item consolidation accounts for the growth."], "next_steps": ["Inspect agency budget justification documents for scope changes.", "Cross-reference with DBM Special Allotment Release Orders (SARO) when available."]}, {"lead_id": "LEAD-NEW-003", "title": "Newly Created Line Item: Additional Appropriation in Compliance with the Supreme Cour...", "category": "NEW_ITEM", "confidence": "HIGH", "observation": "A new appropriation line item titled 'Additional Appropriation in Compliance with the Supreme Court Decision' under Philippine Health Insurance Corporation appears in FY 2026 with \u20b160.00 Billion, having no exact match in FY 2025.", "numerical_evidence": {"department": "Budgetary Support to Government Corporations (BSGC)", "agency": "Philippine Health Insurance Corporation", "prexc_fpap_id": "310100100003000", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 0.0, "amount_2026_pesos": 60000000000.0, "absolute_change_pesos": 60000000000.0, "percent_change": "NEW_IN_2026"}, "source_years": [2026], "query_used": "pap_comparison WHERE change_status = 'NEW_IN_2026' ORDER BY amount_2026_pesos DESC", "provenance_2025": [], "provenance_2026": [{"fiscal_year": 2026, "department_name": "Budgetary Support to Government Corporations (BSGC)", "agency_name": "Philippine Health Insurance Corporation", "prexc_fpap_id": "310100100003000", "raw_description": "Additional Appropriation in Compliance with the Supreme Court Decision", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021404000", "object_description": "Budgetary Support to Government-Owned or Controlled Corporations", "amount_pesos": 60000000000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 721891}], "caveats": ["The line item may be a genuinely new national program or a restructured/renamed legacy item.", "Check for semantic equivalents under different wording in FY 2025."], "next_steps": ["Perform fuzzy search across 2025 agency line items for potential renames.", "Review DBM Budget Priorities Framework for policy mandate changes."]}, {"lead_id": "LEAD-NEW-004", "title": "Newly Created Line Item: Health insurance coverage under the Sin Tax Law...", "category": "NEW_ITEM", "confidence": "HIGH", "observation": "A new appropriation line item titled 'Health insurance coverage under the Sin Tax Law' under Philippine Health Insurance Corporation appears in FY 2026 with \u20b153.13 Billion, having no exact match in FY 2025.", "numerical_evidence": {"department": "Budgetary Support to Government Corporations (BSGC)", "agency": "Philippine Health Insurance Corporation", "prexc_fpap_id": "310100100001000", "expense_class": "Maintenance and Other Operating Expenses", "amount_2025_pesos": 0.0, "amount_2026_pesos": 53134370000.0, "absolute_change_pesos": 53134370000.0, "percent_change": "NEW_IN_2026"}, "source_years": [2026], "query_used": "pap_comparison WHERE change_status = 'NEW_IN_2026' ORDER BY amount_2026_pesos DESC", "provenance_2025": [], "provenance_2026": [{"fiscal_year": 2026, "department_name": "Budgetary Support to Government Corporations (BSGC)", "agency_name": "Philippine Health Insurance Corporation", "prexc_fpap_id": "310100100001000", "raw_description": "Health insurance coverage under the Sin Tax Law", "expense_class": "Maintenance and Other Operating Expenses", "object_code": "5021404000", "object_description": "Budgetary Support to Government-Owned or Controlled Corporations", "amount_pesos": 53134370000.0, "source_file": "FY2026-GAA-Byobject.xlsx", "source_sheet": "Sheet 1", "source_row": 721889}], "caveats": ["The line item may be a genuinely new national program or a restructured/renamed legacy item.", "Check for semantic equivalents under different wording in FY 2025."], "next_steps": ["Perform fuzzy search across 2025 agency line items for potential renames.", "Review DBM Budget Priorities Framework for policy mandate changes."]}];
+
+    function formatPHP(amount) {
+      if (amount >= 1e9) return "₱" + (amount / 1e9).toFixed(2) + "B";
+      if (amount >= 1e6) return "₱" + (amount / 1e6).toFixed(2) + "M";
+      return "₱" + amount.toLocaleString();
+    }
+
+    function populateIncreases() {
+      const tbody = document.getElementById("body-inc");
+      tbody.innerHTML = dataInc.map(r => `
+        <tr>
+          <td><strong>${r.agency_name}</strong></td>
+          <td>${r.description}</td>
+          <td class="num">${formatPHP(r.amount_2025_pesos)}</td>
+          <td class="num">${formatPHP(r.amount_2026_pesos)}</td>
+          <td class="num text-green">+${formatPHP(r.absolute_change_pesos)}</td>
+          <td class="num text-green">+${r.percent_change.toFixed(1)}%</td>
+        </tr>
+      `).join("");
+    }
+
+    function populateNew() {
+      const tbody = document.getElementById("body-new");
+      tbody.innerHTML = dataNew.map(r => `
+        <tr>
+          <td><strong>${r.agency_name}</strong></td>
+          <td>${r.description}</td>
+          <td>${r.expense_class}</td>
+          <td class="num text-green">${formatPHP(r.amount_2026_pesos)}</td>
+        </tr>
+      `).join("");
+    }
+
+    function populateFlood() {
+      const tbody = document.getElementById("body-fc");
+      tbody.innerHTML = dataFc.map(r => `
+        <tr>
+          <td><strong>${r.agency_name}</strong></td>
+          <td>${r.description}</td>
+          <td class="num">${formatPHP(r.amount_2025_pesos)}</td>
+          <td class="num">${formatPHP(r.amount_2026_pesos)}</td>
+          <td class="num text-green">${r.absolute_change_pesos >= 0 ? '+' : ''}${formatPHP(r.absolute_change_pesos)}</td>
+        </tr>
+      `).join("");
+    }
+
+    function populateLeads() {
+      const container = document.getElementById("leads-container");
+      container.innerHTML = dataReceipts.map(l => `
+        <div class="lead-card">
+          <div class="lead-header">
+            <span class="lead-id">${l.lead_id}</span>
+            <span class="lead-cat">${l.category}</span>
+          </div>
+          <div class="lead-title">${l.title}</div>
+          <div class="lead-obs">${l.observation}</div>
+          <div class="lead-prov">
+            <div>2025: ${l.provenance_2025[0] ? 'File ' + l.provenance_2025[0].source_file + ', Row ' + l.provenance_2025[0].source_row : 'NEW IN 2026'}</div>
+            <div>2026: ${l.provenance_2026[0] ? 'File ' + l.provenance_2026[0].source_file + ', Row ' + l.provenance_2026[0].source_row : 'DISAPPEARED'}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function switchTab(event, tabId) {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      
+      event.target.classList.add("active");
+      document.getElementById(tabId).classList.add("active");
+    }
+
+    function filterTables() {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      document.querySelectorAll("tbody tr").forEach(tr => {
+        const text = tr.innerText.toLowerCase();
+        tr.style.display = text.includes(q) ? "" : "none";
+      });
+    }
+
+    // Initialize
+    populateIncreases();
+    populateNew();
+    populateFlood();
+    populateLeads();
+  </script>
+</body>
+</html>
